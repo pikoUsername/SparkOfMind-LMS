@@ -1,0 +1,23 @@
+﻿using LMS.Infrastructure.EventDispatcher;
+using System.Reflection;
+
+namespace LMS.Application
+{
+    public static class Configuration
+    {
+        public static IApplicationBuilder UseEventDispatcher(this IApplicationBuilder app)
+        {
+            var eventDispatcher = (EventDispatcher)app.ApplicationServices.GetRequiredService<IEventDispatcher>();
+
+            eventDispatcher.AddIgnoredTypes([typeof(LoggingHandler<>)]);
+
+            // Resolve and add event listeners within the scope of a request
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                eventDispatcher.RegisterEventSubscribers(Assembly.GetExecutingAssembly(), scope);
+            }
+
+            return app;
+        }
+    }
+}

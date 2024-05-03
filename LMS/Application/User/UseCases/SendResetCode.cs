@@ -1,0 +1,44 @@
+﻿using LMS.Application.Common.Interfaces;
+using LMS.Application.Common.UseCases;
+using LMS.Application.User.Dto;
+using LMS.Infrastructure.Adapters.Mailing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using System.ComponentModel;
+
+namespace LMS.Application.User.UseCases
+{
+    public class SendResetCode : BaseUseCase<SendResetCodeDto, bool>
+    {
+        private IApplicationDbContext _context;
+        private IEmailService _emailService;
+        private IMemoryCache _cacheService;
+
+        public SendResetCode(IEmailService emailService, IApplicationDbContext dbContext, IMemoryCache cacheService)
+        {
+            _context = dbContext;
+            _emailService = emailService;
+            _cacheService = cacheService;
+        }
+
+        public async Task<bool> Execute(SendResetCodeDto dto)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == dto.Email);
+
+            Guard.Against.Null(user, message: "User does not exists");
+
+            Random rnd = new Random();
+
+            var code = rnd.Next(100000);
+
+            var newCode = _cacheService.Set(dto.Email + code, code);
+
+            await _emailService.SendEmailAsync(
+                dto.Email,
+                "Возврат пароля для входа в ваш аккаунт",
+                $"Ваш код для сброса пароля: {code}");
+
+            return true;
+        }
+    }
+}
