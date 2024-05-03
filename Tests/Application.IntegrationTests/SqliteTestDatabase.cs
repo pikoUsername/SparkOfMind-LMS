@@ -1,5 +1,4 @@
-﻿using KarmaMarketplace.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -8,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
-using KarmaMarketplace.Infrastructure.EventDispatcher;
+using LMS.Infrastructure.Data;
 
 namespace Tests.Application.IntegrationTests
 {

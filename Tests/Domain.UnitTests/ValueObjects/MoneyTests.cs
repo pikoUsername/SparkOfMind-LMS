@@ -1,5 +1,5 @@
-﻿using KarmaMarketplace.Domain.Payment.Enums;
-using KarmaMarketplace.Domain.Payment.ValueObjects;
+﻿using LMS.Domain.Payment.Enums;
+using LMS.Domain.Payment.ValueObjects;
 
 namespace Tests.Domain.UnitTests.ValueObjects
 {

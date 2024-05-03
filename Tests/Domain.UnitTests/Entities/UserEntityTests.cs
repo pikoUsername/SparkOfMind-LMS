@@ -1,7 +1,7 @@
-﻿using KarmaMarketplace.Domain.Common;
-using KarmaMarketplace.Domain.User.Entities;
-using KarmaMarketplace.Domain.User.Enums;
-using KarmaMarketplace.Infrastructure;
+﻿using LMS.Domain.Common;
+using LMS.Domain.User.Entities;
+using LMS.Domain.User.Enums;
+using LMS.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 
 namespace Tests.Domain.UnitTests.Entities

@@ -1,9 +1,6 @@
 ﻿
-using Castle.Core.Logging;
-using KarmaMarketplace.Application.Common.Interfaces;
-using KarmaMarketplace.Infrastructure.EventDispatcher;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
+using LMS.Application.Common.Interfaces;
+using LMS.Infrastructure.EventDispatcher;
 
 namespace Tests.Application.IntegrationTests
 {

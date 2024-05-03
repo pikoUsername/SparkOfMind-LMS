@@ -1,7 +1,7 @@
 ﻿using System.Data.Common;
-using KarmaMarketplace.Application.Common.Interfaces;
-using KarmaMarketplace.Infrastructure.Data;
-using KarmaMarketplace.Infrastructure.EventSourcing;
+using LMS.Application.Common.Interfaces;
+using LMS.Infrastructure.Data;
+using LMS.Infrastructure.EventStore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;

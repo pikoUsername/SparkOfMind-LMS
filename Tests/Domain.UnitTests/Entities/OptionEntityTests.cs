@@ -1,5 +1,5 @@
-﻿using KarmaMarketplace.Domain.Market.Entities;
-using KarmaMarketplace.Domain.Market.Enums;
+﻿using LMS.Domain.Market.Entities;
+using LMS.Domain.Market.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,7 +1,8 @@
-﻿using KarmaMarketplace.Application.User;
-using KarmaMarketplace.Domain.User.Entities;
-using KarmaMarketplace.Domain.User.Enums;
-using KarmaMarketplace.Infrastructure.Data;
+﻿using LMS.Application.User;
+using LMS.Application.User.Dto;
+using LMS.Domain.User.Entities;
+using LMS.Domain.User.Enums;
+using LMS.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -47,7 +48,7 @@ namespace Tests.Application.IntegrationTests
             var userService = scope.ServiceProvider.GetRequiredService<UserService>(); 
             UserEntity result = await userService
                 .Create()
-                .Execute(new KarmaMarketplace.Application.User.Dto.CreateUserDto()
+                .Execute(new CreateUserDto()
                 {
                     UserName = userName,
                     Password = password, 

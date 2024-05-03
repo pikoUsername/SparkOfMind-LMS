@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Tests.Domain.UnitTests.Entities
 {
-    using KarmaMarketplace.Domain.Market.Entities;
-    using KarmaMarketplace.Domain.Payment.Entities;
-    using KarmaMarketplace.Domain.Payment.Enums;
+    using LMS.Domain.Market.Entities;
+    using LMS.Domain.Payment.Entities;
+    using LMS.Domain.Payment.Enums;
     using NUnit.Framework;
     using System;
 
@@ -23,7 +23,7 @@ namespace Tests.Domain.UnitTests.Entities
             var product = new ProductEntity();
             var transaction = new TransactionEntity
             {
-                Amount = new KarmaMarketplace.Domain.Payment.ValueObjects.Money(
+                Amount = new LMS.Domain.Payment.ValueObjects.Money(
                     amount: 200, currency: CurrencyEnum.RussianRuble)
             };
 

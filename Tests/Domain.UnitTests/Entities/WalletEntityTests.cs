@@ -1,8 +1,8 @@
-﻿using KarmaMarketplace.Domain.Payment.Entities;
-using KarmaMarketplace.Domain.Payment.Enums;
-using KarmaMarketplace.Domain.Payment.Exceptions;
-using KarmaMarketplace.Domain.Payment.ValueObjects;
-using KarmaMarketplace.Domain.User.Entities;
+﻿using LMS.Domain.Payment.Entities;
+using LMS.Domain.Payment.Enums;
+using LMS.Domain.Payment.Exceptions;
+using LMS.Domain.Payment.ValueObjects;
+using LMS.Domain.User.Entities;
 using System;
 
 namespace Tests.Domain.UnitTests.Entities

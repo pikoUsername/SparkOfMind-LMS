@@ -1,9 +1,9 @@
-﻿using KarmaMarketplace.Domain.Files.Entities;
-using KarmaMarketplace.Domain.Market.Entities;
-using KarmaMarketplace.Domain.Market.Enums;
-using KarmaMarketplace.Domain.Market.Exceptions;
-using KarmaMarketplace.Domain.Payment.ValueObjects;
-using KarmaMarketplace.Domain.User.Entities;
+﻿using LMS.Domain.Files.Entities;
+using LMS.Domain.Market.Entities;
+using LMS.Domain.Market.Enums;
+using LMS.Domain.Market.Exceptions;
+using LMS.Domain.Payment.ValueObjects;
+using LMS.Domain.User.Entities;
 
 namespace Tests.Domain.UnitTests.Entities
 {
