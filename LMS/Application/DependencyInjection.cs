@@ -11,7 +11,7 @@ namespace LMS.Application
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services, ILoggingBuilder logging)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddSingleton<IEventDispatcher, EventDispatcher>();
             services.AddScoped<IAccessPolicy, AccessPolicy>();
@@ -20,7 +20,7 @@ namespace LMS.Application
             services.AddFilesApplicationServices();
             services.AddStaffApplicationServices();
 
-            services.AddUseCasesFromAssembly(Assembly.GetExecutingAssembly(), logging);
+            services.AddUseCasesFromAssembly(Assembly.GetExecutingAssembly());
 
             return services;
         }

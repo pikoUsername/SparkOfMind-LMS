@@ -73,7 +73,7 @@ namespace LMS.Presentation.Web
             services.AddHangfireServer();
             services.AddCoreAdmin();
 
-            services.AddCors(option => option.AddPolicy("TaskManger", builder =>
+            services.AddCors(option => option.AddPolicy("SparkOfMindLms", builder =>
             {
                 builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
             }));
