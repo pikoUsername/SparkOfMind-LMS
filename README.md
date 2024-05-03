@@ -1,19 +1,21 @@
-# Бекенд маркетплейса 
+# Бекенд LMS 
 ### Основная информация
 
-Этот репозитории ответсвеннен за логику сайта маркетплейса кармы. Содержит в себе весь бекенд сайта. Сопровождается разработчиком pikoUsername. 
+Этот репозитории ответсвеннен за логику сайта SparkofMind LMS. Содержит в себе весь бекенд сайта. Сопровождается разработчиком pikoUsername. 
 
 ### Как запустить? 
 
 Сперва загрузите репозитории с помощью команды: 
 ```shell
-$ git clone https://github.com/karma-dev-team/MarketplaceBackend.git 
+$ git clone https://github.com/pikoUsername/SparkOfMind-LMS.git
 ```
 После откройте Visual studio, и откройте проект в которую скопировали проект. 
 
 Третьим шагом выступает сам запуск приложения, просто запустив команды в директории проекта с именем приложения: 
 ```
-$ dotnet ef database update
+$ dotnet restore 
+$ dotnet ef database update --context EventStoreContext
+$ dotnet ef database update --context ApplicationDbContext 
 $ dotnet run 
 ```
 
