@@ -2,6 +2,7 @@
 {
     public interface IAccessUser
     {
-        public ICollection<IPermissionEntity> GetPermissions();  
+        public ICollection<IPermissionEntity> GetPermissions();
+        public ICollection<IRoleEntity> GetRoles(); 
     }
 }

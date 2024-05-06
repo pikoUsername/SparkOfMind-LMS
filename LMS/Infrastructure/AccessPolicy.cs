@@ -2,6 +2,7 @@
 using LMS.Application.User.Exceptions;
 using LMS.Domain.User.Entities;
 using LMS.Domain.User.Enums;
+using LMS.Domain.User.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Infrastructure
@@ -10,98 +11,67 @@ namespace LMS.Infrastructure
     {
         private readonly IApplicationDbContext _context;
         private readonly IUser _currentUser;
-        private readonly ILogger _logger;
         private UserEntity? _cachedCurrentUser;
 
-        public AccessPolicy(
-            IApplicationDbContext context, IUser user, ILogger<AccessPolicy> logger)
+        public AccessPolicy(IApplicationDbContext context, IUser user)
         {
             _context = context;
             _currentUser = user;
-            _logger = logger;
-            _cachedCurrentUser = null;
         }
 
-        public static void UnauthorizedIfNull(Guid? userId)
+        public async Task<bool> IsAllowed(IAccessUser actor, string action, object relation)
         {
-            if (userId == null)
+            foreach (var permissionAcl in actor.GetPermissions())
             {
-                throw new Unauthorized();
-            }
-        }
-
-        public async Task<bool> CanAccess(UserRoles role, Guid? userId = null)
-        {
-            if (_cachedCurrentUser != null)
-            {
-                if (_cachedCurrentUser.Id == userId || _cachedCurrentUser.Id == _currentUser.Id)
+                if (CheckPermission(permissionAcl.Join(), relation, action))
                 {
-                    return _cachedCurrentUser.Role >= role;
+                    return true;
                 }
             }
-            if (userId == null)
+            return false;
+        }
+
+        public async Task<bool> Role(IAccessUser actor, string roleName)
+        {
+            foreach (var userRole in actor.GetRoles())
             {
-                if (_currentUser.Id == null)
+                if (userRole.Name == roleName)
                 {
-                    return false;
+                    return await IsAllowed(actor, userRole.Permissions());
                 }
-                return await CanAccess(role, _currentUser.Id);
             }
-
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
-            if (user == null)
-            {
-                return false;
-            }
-            if (user.Blocked == true)
-            {
-                return false;
-            }
-
-            _cachedCurrentUser = user;
-            return user.Role >= role;
+            return false;
         }
 
-        public async Task FailIfNoAccess(UserRoles role, Guid? userId = null)
+        public async Task<bool> CanAccessResource(IAccessUser actor, string action, object relation)
         {
-            var canAccess = await CanAccess(role, userId);
-
-            if (!canAccess)
-            {
-                throw new AccessDenied($"Role: {role}, userId: {userId}, currentUserId: {_currentUser.Id}");
-            }
+            return await IsAllowed(actor, action, relation);
         }
 
-        public async Task<bool> CanAccessOrSelf(Guid byUserId, UserRoles role, Guid? userId = null)
+        public async Task<UserEntity> GetCurrentUser()
         {
-            if (userId == byUserId)
-            {
-                return true;
-            }
-            return userId == byUserId || await CanAccess(role, byUserId);
-        }
-
-        public async Task FailIfNotSelfOrNoAccess(Guid byUserId, UserRoles role, Guid? userId = null)
-        {
-            if (!await CanAccessOrSelf(role: role, byUserId: byUserId, userId: _currentUser.Id))
-            {
-                throw new AccessDenied($"Role: {role}, userId: {userId}, currentUserId: {_currentUser.Id}, byUserId: {byUserId}");
-            }
-        }
-
-        async public Task<UserEntity> GetCurrentUser()
-        {
-            if (_cachedCurrentUser?.Id != _currentUser.Id)
-            {
-                _cachedCurrentUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == _currentUser.Id);
-            }
-
             if (_cachedCurrentUser == null)
             {
-                throw new AccessDenied("User is not authroized");
-            }
+                // Retrieve current user from the database
+                _cachedCurrentUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == _currentUser.Id);
 
+                // If current user is not found or blocked, throw AccessDenied exception
+                if (_cachedCurrentUser == null || _cachedCurrentUser.Blocked)
+                {
+                    throw new AccessDenied("User is not authorized");
+                }
+            }
             return _cachedCurrentUser;
+        }
+
+        private bool CheckPermission(string permissionAcl, object relation, string action)
+        {
+            var parts = permissionAcl.Split(':');
+            var subjectName = parts[0];
+            var subjectId = parts[1];
+            var subjectAction = parts[2];
+
+            return (subjectId == relation.ToString() || subjectId == "*") && subjectName == relation.GetType().Name && subjectAction == action; 
         }
     }
 }

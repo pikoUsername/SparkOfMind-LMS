@@ -9,6 +9,7 @@ namespace LMS.Domain.User.Entities
         [Required]
         public string SubjectName { get; set; } = null!;
         [Required]
+        // ["write", "read", "edit", "delete", "extend", "*"]
         public string SubjectAction { get; set; } = null!;
         [Required]
         public string SubjectId { get; set; } = null!;

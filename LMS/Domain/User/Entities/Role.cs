@@ -1,9 +1,10 @@
 ﻿using LMS.Domain.User.Enums;
 using LMS.Domain.User.Events;
+using LMS.Domain.User.Interfaces;
 
 namespace LMS.Domain.User.Entities
 {
-    public class RoleEntity : BaseAuditableEntity
+    public class RoleEntity : BaseAuditableEntity, IRoleEntity
     {
         public string Name { get; set; } = null!;
         public ICollection<PermissionEntity> Permissions { get; set; } = null!;
