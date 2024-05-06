@@ -1,5 +1,4 @@
 ﻿using LMS.Domain.Files.Entities;
-using LMS.Domain.Messaging.Entities;
 using LMS.Domain.User.Enums;
 using LMS.Domain.User.Events;
 using LMS.Infrastructure;
@@ -20,7 +19,7 @@ namespace LMS.Domain.User.Entities
         [EmailAddress(ErrorMessage = "Email address is not correct")]
         public string Email { get; set; } = null!;
         [Required]
-        public UserRoles Role { get; set; } = UserRoles.User;
+        public ICollection<RoleEntity> Roles { get; set; } = [];
         [Column(name: "TelegramId")]
         private string? _telegramId; // Закрытое поле для хранения значения
         public FileEntity? Image { get; set; }
@@ -28,9 +27,10 @@ namespace LMS.Domain.User.Entities
         [Required]
         public bool IsOnline { get; set; } = false;
         [JsonIgnore]
-        public ICollection<ChatEntity> Chats { get; set; } = [];
-        [JsonIgnore]
         public ICollection<WarningEntity> Warnings { get; set; } = [];
+        public bool IsSuperadmin { get; set; } = false;
+        public ICollection<PermissionEntity> Permissions { get; set; } = [];
+        public ICollection<GroupEntity> Groups { get; set; } = []; 
 
         [NotMapped]
         public string? TelegramId
@@ -58,14 +58,12 @@ namespace LMS.Domain.User.Entities
             string UserName,
             string email,
             string password,
-            PasswordService passwordService,
-            UserRoles role = UserRoles.SuperAdmin)
+            PasswordService passwordService)
         {
             var user = new UserEntity()
             {
                 Email = email,
                 UserName = UserName,
-                Role = role,
             };
             var hashedPassword = passwordService.HashPassword(user, password);
 
@@ -98,19 +96,6 @@ namespace LMS.Domain.User.Entities
             HashedPassword = passwordService.HashPassword(this, newPassword);
         }
 
-        public void UpdateRole(
-            UserRoles role)
-        {
-            Role = role;
-
-            AddDomainEvent(
-                new UserUpdated(
-                    user: this,
-                    fieldName: "Role"
-                )
-             );
-        }
-
         public void Warn(string reason, UserEntity byUser)
         {
             if (Blocked)
@@ -126,6 +111,50 @@ namespace LMS.Domain.User.Entities
                 return;
             }
             AddDomainEvent(new UserWarned(this, reason));
+        }
+
+        public void AddRole(RoleEntity role)
+        {
+            if (Roles.Select(x => x.Role).Any(x => x == role.Role) 
+                && Roles.Select(x => x.Name).Any(x => x == role.Name))
+            {
+                return; 
+            }
+            Roles.Add(role);
+
+            AddDomainEvent(
+                new UserUpdated(
+                    user: this,
+                    fieldName: "Role"
+                )
+             );
+        }
+
+        public void AddPermission(PermissionEntity permission)
+        {
+            Permissions.Add(permission);
+
+            AddDomainEvent(new PermissionAdded("USER", permission)); 
+        }
+
+        public void AddGroup(GroupEntity group)
+        {
+            Groups.Add(group);
+
+            AddDomainEvent(new GroupUserAdded(group, this));
+        }
+
+        public ICollection<string> AllPermissions()
+        {
+            var permissions = new List<string>();
+
+            permissions.AddRange(Permissions.Select(x => x.Join()));
+            foreach (var group in Groups) {
+                permissions.AddRange(group.Permissions.Select(x => x.Join())); 
+            }
+            permissions.AddRange(Roles.Select(x => x.Permission.Join())); 
+
+            return permissions;
         }
     }
 }
