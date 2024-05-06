@@ -1,10 +1,10 @@
 ﻿using LMS.Domain.User.Events;
+using LMS.Domain.User.Interfaces;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.CompilerServices;
 
 namespace LMS.Domain.User.Entities
 {
-    public class PermissionEntity : BaseAuditableEntity
+    public class PermissionEntity : BaseAuditableEntity, IPermissionEntity
     {
         [Required]
         public string SubjectName { get; set; } = null!;
@@ -13,12 +13,12 @@ namespace LMS.Domain.User.Entities
         [Required]
         public string SubjectId { get; set; } = null!;
 
-        public static PermissionEntity Create(string Name, string Action, string subjectId)
+        public static PermissionEntity Create(string name, string subjectId, string action)
         {
             var perm = new PermissionEntity
             {
-                SubjectName = Name,
-                SubjectAction = Action,
+                SubjectName = name,
+                SubjectAction = action,
                 SubjectId = subjectId
             };
 

@@ -1,6 +1,7 @@
 ﻿using LMS.Domain.Files.Entities;
 using LMS.Domain.User.Enums;
 using LMS.Domain.User.Events;
+using LMS.Domain.User.Interfaces;
 using LMS.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
@@ -9,7 +10,7 @@ using System.Text.Json.Serialization;
 
 namespace LMS.Domain.User.Entities
 {
-    public class UserEntity : BaseAuditableEntity
+    public class UserEntity : BaseAuditableEntity, IAccessUser
     {
         [Required]
         public string UserName { get; set; } = null!;
@@ -130,11 +131,20 @@ namespace LMS.Domain.User.Entities
              );
         }
 
+        // Repeating code! 
         public void AddPermission(PermissionEntity permission)
         {
             Permissions.Add(permission);
 
             AddDomainEvent(new PermissionAdded("USER", permission)); 
+        }
+
+        public void AddPermissionWithCode(string subjectName, string subjectId, params string[] actions)
+        {
+            foreach (var action in actions)
+            {
+                AddPermission(PermissionEntity.Create(subjectName, subjectId, action)); 
+            }
         }
 
         public void AddGroup(GroupEntity group)
@@ -144,15 +154,19 @@ namespace LMS.Domain.User.Entities
             AddDomainEvent(new GroupUserAdded(group, this));
         }
 
-        public ICollection<string> AllPermissions()
+        public ICollection<IPermissionEntity> GetPermissions()
         {
-            var permissions = new List<string>();
+            // is it cachable? intersting...
+            var permissions = new List<IPermissionEntity>();
 
-            permissions.AddRange(Permissions.Select(x => x.Join()));
+            permissions.AddRange(Permissions);
             foreach (var group in Groups) {
-                permissions.AddRange(group.Permissions.Select(x => x.Join())); 
+                permissions.AddRange(group.Permissions); 
             }
-            permissions.AddRange(Roles.Select(x => x.Permission.Join())); 
+            foreach (var role in Roles)
+            {
+                permissions.AddRange(role.Permissions);
+            }
 
             return permissions;
         }
