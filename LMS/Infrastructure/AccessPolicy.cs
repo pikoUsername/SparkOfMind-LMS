@@ -1,8 +1,7 @@
 ﻿using LMS.Application.Common.Interfaces;
-using LMS.Application.User.Exceptions;
 using LMS.Domain.User.Entities;
-using LMS.Domain.User.Enums;
 using LMS.Domain.User.Interfaces;
+using LMS.Infrastructure.Data.Queries;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Infrastructure
@@ -19,33 +18,33 @@ namespace LMS.Infrastructure
             _currentUser = user;
         }
 
-        public async Task<bool> IsAllowed(IAccessUser actor, string action, object relation)
+        public Task<bool> IsAllowed(IAccessUser actor, string action, object relation)
         {
             foreach (var permissionAcl in actor.GetPermissions())
             {
-                if (CheckPermission(permissionAcl.Join(), relation, action))
+                if (CheckPermission(permissionAcl.Join(), action, relation))
                 {
-                    return true;
+                    return Task.FromResult(true);
                 }
             }
-            return false;
+            return Task.FromResult(false);
         }
 
-        public async Task<bool> Role(IAccessUser actor, string roleName)
+        public Task<bool> Role(IAccessUser actor, string roleName)
         {
             foreach (var userRole in actor.GetRoles())
             {
                 if (userRole.Name == roleName)
                 {
-                    return await IsAllowed(actor, userRole.Permissions());
+                    return Task.FromResult(true); 
                 }
             }
-            return false;
+            return Task.FromResult(false);
         }
 
-        public async Task<bool> CanAccessResource(IAccessUser actor, string action, object relation)
+        public async Task<bool> Relationship(IAccessUser actor, string action, object relation, Guid ownerId)
         {
-            return await IsAllowed(actor, action, relation);
+            return await IsAllowed(actor, action, relation) || ownerId == actor.Id; 
         }
 
         public async Task<UserEntity> GetCurrentUser()
@@ -53,7 +52,9 @@ namespace LMS.Infrastructure
             if (_cachedCurrentUser == null)
             {
                 // Retrieve current user from the database
-                _cachedCurrentUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == _currentUser.Id);
+                _cachedCurrentUser = await _context.Users
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Id == _currentUser.Id);
 
                 // If current user is not found or blocked, throw AccessDenied exception
                 if (_cachedCurrentUser == null || _cachedCurrentUser.Blocked)
@@ -64,7 +65,7 @@ namespace LMS.Infrastructure
             return _cachedCurrentUser;
         }
 
-        private bool CheckPermission(string permissionAcl, object relation, string action)
+        private bool CheckPermission(string permissionAcl, string action, object relation)
         {
             var parts = permissionAcl.Split(':');
             var subjectName = parts[0];
