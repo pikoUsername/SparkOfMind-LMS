@@ -23,12 +23,7 @@ namespace LMS.Domain.Payment.Entities
         public WalletEntity Wallet { get; set; } = null!;
 
         [Required]
-        public ProductEntity Product { get; set; } = null!;
-
-        [Required]
         public bool Completed { get; set; } = false;
-        [ForeignKey(nameof(ChatEntity))]
-        public Guid? ChatId { get; set; }
 
         [Required]
         public PurchaseStatus Status { get; set; }
@@ -56,11 +51,6 @@ namespace LMS.Domain.Payment.Entities
             purchase.AddDomainEvent(new PurchaseCreated(purchase));
 
             return purchase;
-        }
-
-        public void SetBoundChat(Guid chatId)
-        {
-            ChatId = chatId;
         }
 
         public void Problem(string description)
