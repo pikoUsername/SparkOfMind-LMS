@@ -4,6 +4,6 @@
     {
         School,
         College, 
-        Courses
+        Online
     }
 }
