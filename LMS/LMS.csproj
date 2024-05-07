@@ -35,7 +35,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Domain\Study\Events\" />
     <Folder Include="Domain\Study\Exceptions\" />
   </ItemGroup>
 
