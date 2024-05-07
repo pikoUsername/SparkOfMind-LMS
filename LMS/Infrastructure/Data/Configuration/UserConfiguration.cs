@@ -12,9 +12,6 @@ namespace LMS.Infrastructure.Data.Configuration
             builder.Property(t => t.UserName)
                 .HasMaxLength(200)
                 .IsRequired();
-            builder
-                .Property(e => e.Role)
-                .HasConversion<string>();
         }
     }
 }

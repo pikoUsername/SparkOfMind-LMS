@@ -2,12 +2,9 @@
 using System.Reflection;
 using LMS.Domain.Files.Entities;
 using LMS.Domain.Payment.Entities;
-using LMS.Domain.Common;
 using LMS.Domain.Staff.Entities;
 using LMS.Domain.User.Entities;
 using LMS.Application.Common.Interfaces;
-using LMS.Domain.Market.Entities;
-using LMS.Domain.Messaging.Entities;
 using LMS.Infrastructure.EventDispatcher;
 
 namespace LMS.Infrastructure.Data
@@ -15,20 +12,14 @@ namespace LMS.Infrastructure.Data
     public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
         public DbSet<UserEntity> Users { get; set; }
-        public DbSet<CategoryEntity> Categories { get; set; }
-        public DbSet<ProductEntity> Products { get; set; }
-        public DbSet<ReviewEntity> Reviews { get; set; }
-        public DbSet<GameEntity> Games { get; set; }
-        public DbSet<AutoAnswerEntity> AutoAnswers { get; set; }
+        public DbSet<PermissionEntity> Permissions { get; set; }
+        public DbSet<GroupEntity> Groups { get; set; }
+        public DbSet<RoleEntity> Roles { get; set; }
+        public DbSet<TicketSubjectEntity> TicketSubjects { get; set; }
         public DbSet<TransactionProviderEntity> TransactionProviders { get; set; }
         public DbSet<PaymentSystemEntity> PaymentSystems { get; set; }
-        public DbSet<OptionEntity> Options { get; set; }
         public DbSet<NotificationEntity> Notifications { get; set; }
         public DbSet<PurchaseEntity> Purchases { get; set; }
-        public DbSet<ChatEntity> Chats { get; set; }
-        public DbSet<MessageEntity> Messages { get; set; }
-        public DbSet<ProductViewEntity> ProductViews { get; set; }
-        public DbSet<ChatReadRecord> ChatReads { get; set; }
         public DbSet<TransactionEntity> Transactions { get; set; }
         public DbSet<WalletEntity> Wallets { get; set; }
         public DbSet<FileEntity> Files { get; set; }
