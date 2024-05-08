@@ -13,7 +13,32 @@ namespace LMS.Domain.User.Entities
     public class UserEntity : BaseAuditableEntity, IAccessUser
     {
         [Required]
-        public string UserName { get; set; } = null!;
+        public string Name { get; set; } = null!;
+        [Required]
+        public string Surname { get; set; } = null!;
+        [Required, NotMapped]
+        public string Fullname
+        {
+            get
+            {
+                return $"{Surname} {Name}";
+            }
+            set
+            {
+                var parts = value.Split(' ');
+                if (parts.Length == 2)
+                {
+                    Surname = parts[0];
+                    Name = parts[1];
+                }
+                else
+                {
+                    // В этом случае можно выбросить исключение, 
+                    // или выполнить другие действия в зависимости от логики приложения.
+                    throw new ArgumentException("Неверный формат Fullname. Имя и фамилия должны быть разделены пробелом.");
+                }
+            }
+        }
         [Required]
         public string HashedPassword { get; set; } = null!;
         [Required]
@@ -24,14 +49,14 @@ namespace LMS.Domain.User.Entities
         [Column(name: "TelegramId")]
         private string? _telegramId; // Закрытое поле для хранения значения
         public FileEntity? Image { get; set; }
-        public string? Description { get; set; }
         [Required]
         public bool IsOnline { get; set; } = false;
         [JsonIgnore]
         public ICollection<WarningEntity> Warnings { get; set; } = [];
         public bool IsSuperadmin { get; set; } = false;
         public ICollection<PermissionEntity> Permissions { get; set; } = [];
-        public ICollection<GroupEntity> Groups { get; set; } = []; 
+        public ICollection<GroupEntity> Groups { get; set; } = [];
+        public string? Phone { get; set; } 
 
         [NotMapped]
         public string? TelegramId
@@ -56,7 +81,7 @@ namespace LMS.Domain.User.Entities
         public bool Blocked { get; set; } = false;
 
         public static UserEntity Create(
-            string UserName,
+            string fullname,
             string email,
             string password,
             PasswordService passwordService)
@@ -64,7 +89,7 @@ namespace LMS.Domain.User.Entities
             var user = new UserEntity()
             {
                 Email = email,
-                UserName = UserName,
+                Fullname = fullname,
             };
             var hashedPassword = passwordService.HashPassword(user, password);
 
@@ -75,9 +100,16 @@ namespace LMS.Domain.User.Entities
             return user;
         }
 
+        public ICollection<IRoleEntity> GetRoles()
+        {
+            return (ICollection<IRoleEntity>)Roles; 
+        }
+
         public void Block()
         {
             Blocked = true;
+
+            AddDomainEvent(new UserBlocked(this));
         }
 
         public void UpdatePassword(string oldPassword, string newPassword, PasswordService passwordService)
