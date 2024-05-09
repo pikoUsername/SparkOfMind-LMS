@@ -22,7 +22,7 @@ namespace LMS.Domain.Study.Entities
         [Required]
         public bool Rejected { get; set; } = false; 
 
-        public static StudentCourseEntity Create(Guid studentId, DateTime admissionDate, Guid purchaseId, Guid courseId, )
+        public static StudentCourseEntity Create(Guid studentId, DateTime admissionDate, Guid purchaseId, Guid courseId)
         {
             var studentCourse = new StudentCourseEntity()
             {
