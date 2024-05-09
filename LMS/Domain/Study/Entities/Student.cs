@@ -43,6 +43,8 @@ namespace LMS.Domain.Study.Entities
     {
         [ForeignKey(nameof(UserEntity)), Required]
         public Guid ParentId { get; set; }
+        public string FullName { get; set; } = null!; 
+        public string? Phone { get; set; } 
         [Required]
         public StudentStatus Status { get; set; }
         [Required]
@@ -50,6 +52,7 @@ namespace LMS.Domain.Study.Entities
         public DateOnly? BirthDate { get; set; }
         [Required]
         public string? Address { get; set; } = null!;
+        public ICollection<StudentCourseEntity> Courses { get; set; } = []; 
 
         public static StudentEntity CreateFromUser(UserEntity user, UserEntity parent, Guid institutionId, StudentStatus status)
         {
@@ -60,7 +63,9 @@ namespace LMS.Domain.Study.Entities
 
             var student = new StudentEntity() { 
                 InstitutionMember = member, 
+                Phone = user.Phone, 
                 Status = status,
+                FullName = user.Fullname, 
                 ParentId = parent.Id,
             };
 
