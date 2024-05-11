@@ -21,6 +21,10 @@ namespace LMS.Domain.Study.Services
                     throw new MarkIsNotValid(mark, gradeType); 
                 }
             }
+            if (gradeType.Variants == null)
+            {
+                throw new Exception("Gradetype does not have variants in it"); 
+            }
             var variants = JsonSerializer.Deserialize<List<string>>(gradeType.Variants);
             if (variants == null)
                 throw new Exception($"CRITICAL BUG, GradeType_{gradeType.Id}.Variants is not possible to parse into List<string>"); 
