@@ -1,7 +1,6 @@
 ﻿using LMS.Application.Common.Interfaces;
 using LMS.Domain.User.Entities;
 using LMS.Domain.User.Interfaces;
-using LMS.Infrastructure.Data.Queries;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Infrastructure
@@ -44,7 +43,12 @@ namespace LMS.Infrastructure
 
         public async Task<bool> Relationship(IAccessUser actor, string action, object relation, Guid ownerId)
         {
-            return await IsAllowed(actor, action, relation) || ownerId == actor.Id; 
+            var result = await IsAllowed(actor, action, relation) || ownerId == actor.Id; 
+            if (!result)
+            {
+                throw new AccessDenied("relationship check failed"); 
+            }
+            return result; 
         }
 
         public async Task<UserEntity> GetCurrentUser()
@@ -65,14 +69,47 @@ namespace LMS.Infrastructure
             return _cachedCurrentUser;
         }
 
+        public async Task EnforceIsAllowed(IAccessUser actor, string action, object relation)
+        {
+            var allowed = await IsAllowed(actor, action, relation);
+            if (!allowed)
+            {
+                throw new AccessDenied($"User is not allowed to perform action '{action}' on relation '{relation}'");
+            }
+        }
+
+        public async Task EnforceRole(IAccessUser actor, string role)
+        {
+            var hasRole = await Role(actor, role);
+            if (!hasRole)
+            {
+                throw new AccessDenied($"User does not have the required role '{role}'");
+            }
+        }
+
+        public async Task EnforceRelationship(IAccessUser actor, string action, object relation, Guid ownerId)
+        {
+            var allowed = await Relationship(actor, action, relation, ownerId);
+            if (!allowed)
+            {
+                throw new AccessDenied($"User is not allowed to perform action '{action}' on relation '{relation}' with ownerId '{ownerId}'");
+            }
+        }
+
         private bool CheckPermission(string permissionAcl, string action, object relation)
         {
             var parts = permissionAcl.Split(':');
+            if (parts.Length != 3)
+            {
+                throw new Exception(
+                    $"Pemissions acl of the user has been compromised, parts: {parts}, acl: {permissionAcl}");
+            }
             var subjectName = parts[0];
             var subjectId = parts[1];
             var subjectAction = parts[2];
 
             return (subjectId == relation.ToString() || subjectId == "*") && subjectName == relation.GetType().Name && subjectAction == action; 
         }
+
     }
 }

@@ -3,10 +3,8 @@ using LMS.Application.Common.UseCases;
 using LMS.Application.Files.Interfaces;
 using LMS.Application.User.Dto;
 using LMS.Domain.User.Entities;
-using LMS.Domain.User.Enums;
 using LMS.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
 
 namespace LMS.Application.User.UseCases
 {
@@ -46,10 +44,10 @@ namespace LMS.Application.User.UseCases
             {
                 user.Email = dto.Email;
             }
-            if (dto.Name != null)
-            {
-                user.UserName = dto.Name;
-            }
+            //if (dto.Name != null)
+            //{
+            //    user.UserName = dto.Name;
+            //}
             if (dto.TelegramId != null)
             {
                 user.TelegramId = dto.TelegramId;
@@ -61,22 +59,18 @@ namespace LMS.Application.User.UseCases
                     newPassword: dto.NewPassword,
                     passwordService: PasswordService);
             }
-            if (dto.Role != null)
-            {
-                if (byUser.Role == UserRoles.Owner)
-                {
-                    user.UpdateRole(
-                        (UserRoles)dto.Role);
-                }
-                else
-                {
-                    throw new AccessDenied(null);
-                }
-            }
-            if (!string.IsNullOrEmpty(dto.Description))
-            {
-                user.Description = dto.Description;
-            }
+            //if (dto.Role != null)
+            //{
+            //    if (byUser.Role == UserRoles.Owner)
+            //    {
+            //        user.UpdateRole(
+            //            (UserRoles)dto.Role);
+            //    }
+            //    else
+            //    {
+            //        throw new AccessDenied(null);
+            //    }
+            //}
             if (dto.Avatar != null)
             {
                 user.Image = await _fileService.UploadFile().Execute(dto.Avatar);

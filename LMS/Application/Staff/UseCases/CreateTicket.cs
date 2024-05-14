@@ -4,6 +4,7 @@ using LMS.Application.Files.Interfaces;
 using LMS.Application.Staff.Dto;
 using LMS.Domain.Files.Entities;
 using LMS.Domain.Staff.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Application.Staff.UseCases
 {
@@ -25,8 +26,11 @@ namespace LMS.Application.Staff.UseCases
             var byUser = await _accessPolicy.GetCurrentUser();
 
             var newFiles = await _fileService.UploadFiles().Execute(dto.Files);
+            var subject = await _context.TicketSubjects.FirstOrDefaultAsync(x => x.Id == dto.SubjectId);
 
-            var ticket = TicketEntity.Create(dto.Text, dto.Subject, byUser, (List<FileEntity>)newFiles);
+            Guard.Against.Null(subject, message: "Subject does not exists"); 
+
+            var ticket = TicketEntity.Create(dto.Text, subject, byUser, (List<FileEntity>)newFiles);
 
             await _context.Tickets.AddAsync(ticket);
             await _context.SaveChangesAsync();

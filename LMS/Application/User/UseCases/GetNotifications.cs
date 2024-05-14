@@ -20,33 +20,35 @@ namespace LMS.Application.User.UseCases
 
         public async Task<ICollection<NotificationEntity>> Execute(GetNotificationsDto dto)
         {
-            var query = _context.Notifications.AsQueryable();
+            throw new NotImplementedException();
 
-            if (dto.UserId != null)
-            {
-                await _accessPolicy.FailIfNotSelfOrNoAccess(
-                    (Guid)dto.UserId, UserRoles.Moderator);
+            //var query = _context.Notifications.AsQueryable();
 
-                query = query.Where(x => x.ToUserId == dto.UserId);
-            }
-            if (dto.Role != null)
-            {
-                await _accessPolicy.FailIfNoAccess(UserRoles.Moderator);
+            //if (dto.UserId != null)
+            //{
+            //    await _accessPolicy.FailIfNotSelfOrNoAccess(
+            //        (Guid)dto.UserId, UserRoles.Moderator);
 
-                query = query
-                    .Join(
-                        _context.Users,
-                        notification => notification.ToUserId,
-                        user => user.Id,
-                        (notification, user) => new { Notification = notification, User = user }
-                    )
-                    .Where(x => x.User.Role == dto.Role)
-                    .Select(x => x.Notification);
-            }
+            //    query = query.Where(x => x.ToUserId == dto.UserId);
+            //}
+            //if (dto.Role != null)
+            //{
+            //    await _accessPolicy.FailIfNoAccess(UserRoles.Moderator);
 
-            //query = query.Paginate(dto.Start, dto.Ends); 
+            //    query = query
+            //        .Join(
+            //            _context.Users,
+            //            notification => notification.ToUserId,
+            //            user => user.Id,
+            //            (notification, user) => new { Notification = notification, User = user }
+            //        )
+            //        .Where(x => x.User.Role == dto.Role)
+            //        .Select(x => x.Notification);
+            //}
 
-            return await query.AsNoTracking().ToListAsync();
+            ////query = query.Paginate(dto.Start, dto.Ends); 
+
+            //return await query.AsNoTracking().ToListAsync();
         }
     }
 }

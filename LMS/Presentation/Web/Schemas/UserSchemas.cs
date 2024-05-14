@@ -9,7 +9,7 @@ namespace LMS.Presentation.Web.Schemas
         [Required]
         public Guid Id { get; set; }
         [Required]
-        public string Name { get; set; } = null!;
+        public string Fullname { get; set; } = null!;
         [Required]
         public string Email { get; set; } = null!;
 
@@ -18,7 +18,7 @@ namespace LMS.Presentation.Web.Schemas
             return new UserScheme
             {
                 Id = entity.Id,
-                Name = entity.UserName,
+                Fullname = entity.Fullname,
                 Email = entity.Email
             };
         }

@@ -6,7 +6,7 @@ namespace LMS.Application.Staff.Dto
     public class CreateTicketDto
     {
         [Required]
-        public string Subject { get; set; } = string.Empty;
+        public Guid SubjectId { get; set; }
         [Required]
         public string Text { get; set; } = string.Empty;
         public ICollection<CreateFileDto> Files { get; set; } = [];
@@ -14,7 +14,7 @@ namespace LMS.Application.Staff.Dto
     public class GetTicketsDto
     {
         public Guid? UserId { get; set; }
-        public string? Subject { get; set; } = null!;
+        public Guid? SubjectId { get; set; } = null!;
         public bool? IsAssignedToMe { get; set; }
     }
 

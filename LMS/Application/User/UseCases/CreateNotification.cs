@@ -21,42 +21,42 @@ namespace LMS.Application.User.UseCases
 
         public async Task<NotificationCreatedDto> Execute(CreateNotificationDto dto)
         {
-            await _accessPolicy.FailIfNoAccess(UserRoles.Moderator);
-            List<UserEntity> users = new List<UserEntity>();
+            throw new NotImplementedException();
 
-            if (dto.Role != null)
-            {
-                await _accessPolicy.FailIfNoAccess(UserRoles.Owner);
+            //List<UserEntity> users = new List<UserEntity>();
 
-                if (dto.Role == UserRoles.User)
-                {
-                    throw new AccessDenied("Impossible to ping that many users");
-                }
+            //if (dto.Role != null)
+            //{
 
-                users = await _context.Users.AsNoTracking().Where(x => x.Role == dto.Role).ToListAsync();
-            }
-            else if (dto.UserId != null)
-            {
-                users = await _context.Users.AsNoTracking().Where(x => x.Id == dto.UserId).ToListAsync();
-            }
+            //    if (dto.Role == UserRoles.User)
+            //    {
+            //        throw new AccessDenied("Impossible to ping that many users");
+            //    }
 
-            var countUsers = users.Count;
+            //    users = await _context.Users.AsNoTracking().Where(x => x.Role == dto.Role).ToListAsync();
+            //}
+            //else if (dto.UserId != null)
+            //{
+            //    users = await _context.Users.AsNoTracking().Where(x => x.Id == dto.UserId).ToListAsync();
+            //}
 
-            foreach (var user in users)
-            {
-                var notification = NotificationEntity.CreateFromSystem(
-                    dto.Title, dto.Text, user.Id, dto.Data);
+            //var countUsers = users.Count;
 
-                _context.Notifications.Add(notification);
-            }
+            //foreach (var user in users)
+            //{
+            //    var notification = NotificationEntity.CreateFromSystem(
+            //        dto.Title, dto.Text, user.Id, dto.Data);
 
-            await _context.SaveChangesAsync();
+            //    _context.Notifications.Add(notification);
+            //}
 
-            return new()
-            {
-                UserIds = users.Select(x => x.Id).ToList(),
-                SentToUsers = countUsers,
-            };
+            //await _context.SaveChangesAsync();
+
+            //return new()
+            //{
+            //    UserIds = users.Select(x => x.Id).ToList(),
+            //    SentToUsers = countUsers,
+            //};
         }
     }
 }

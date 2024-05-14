@@ -8,9 +8,10 @@ namespace LMS.Application.Payment.UseCases
     {
         public SolveProblem() { }
 
+
         public async Task<bool> Execute(SolveProblemDto dto)
         {
-            return new();
+            throw new NotImplementedException();
         }
     }
 }

@@ -26,18 +26,18 @@ namespace LMS.Application.Payment.UseCases
                 .IncludeStandard()
                 .AsQueryable();
 
-            if (!await _accessPolicy.CanAccess(UserRoles.Moderator) && dto.UserId != null)
-            {
-                throw new AccessDenied(null);
-            }
+            //if (!await _accessPolicy.CanAccess(UserRoles.Moderator) && dto.UserId != null)
+            //{
+            //    throw new AccessDenied(null);
+            //}
             if (dto.UserId != null)
             {
                 query = query.Where(x => x.Transaction.CreatedByUser.Id == dto.UserId);
             }
-            if (dto.SoldByUserId != null)
-            {
-                query = query.Where(x => x.Product.CreatedById == dto.SoldByUserId);
-            }
+            //if (dto.SoldByUserId != null)
+            //{
+            //    query = query.Where(x => x.Product.CreatedById == dto.SoldByUserId);
+            //}
             if (dto.StartTime != null && dto.EndTime != null)
             {
                 query = query

@@ -9,6 +9,9 @@ namespace LMS.Application.Common.Interfaces
         public Task<bool> IsAllowed(IAccessUser user, string action, object relation);
         public Task<bool> Role(IAccessUser user, string role);
         public Task<bool> Relationship(IAccessUser user, string action, object relation, Guid ownerId);
+        public Task EnforceIsAllowed(IAccessUser user, string action, object relation);
+        public Task EnforceRole(IAccessUser user, string role);
+        public Task EnforceRelationship(IAccessUser user, string action, object relation, Guid ownerId); 
         public Task<UserEntity> GetCurrentUser(); 
     }
 }

@@ -34,7 +34,7 @@ namespace LMS.Domain.Staff.Entities
         }
 
         public static TicketEntity Create(
-            string text, string subject, UserEntity createdBy, List<FileEntity> files)
+            string text, TicketSubjectEntity subject, UserEntity createdBy, List<FileEntity> files)
         {
             var ticket = new TicketEntity()
             {

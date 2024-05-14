@@ -1,10 +1,10 @@
-﻿using LMS.Domain.Messaging.Entities;
+﻿using LMS.Domain.User.Entities;
 
 namespace LMS.Infrastructure.Caching
 {
-    public interface IMessagesCache
+    public interface INotificationCache
     {
-        Task<ICollection<MessageEntity>> GetNewMessages(Guid userId);
-        Task AddMessage(Guid userId, MessageEntity message);
+        Task<ICollection<NotificationEntity>> GetNewNotifications(Guid userId);
+        Task AddNotification(Guid userId, NotificationEntity notification);
     }
 }

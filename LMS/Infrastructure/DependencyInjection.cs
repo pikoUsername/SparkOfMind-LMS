@@ -60,7 +60,7 @@ namespace LMS.Infrastructure
 
             services.AddSingleton(TimeProvider.System);
             //services.AddScoped<IEventSubscriber<BaseEvent>, LoggingHandler<BaseEvent>>(); 
-            services.AddScoped<IMessagesCache, InMemoryMessageCache>();
+            services.AddScoped<INotificationCache, InMemoryNotificationCache>();
 
             services.AddScoped<PasswordService, PasswordService>(
                 x =>

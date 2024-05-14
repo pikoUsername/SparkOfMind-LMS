@@ -19,18 +19,20 @@ namespace LMS.Application.Payment.UseCases
 
         public async Task<bool> Execute(BlockWalletDto dto)
         {
-            await _accessPolicy.FailIfNoAccess(UserRoles.Admin);
+            throw new NotImplementedException();
 
-            var wallet = await _context.Wallets.FirstOrDefaultAsync(x => x.Id == dto.WalletId);
+            //await _accessPolicy.FailIfNoAccess(UserRoles.Admin);
 
-            Guard.Against.Null(wallet, message: "Wallet does not exists");
+            //var wallet = await _context.Wallets.FirstOrDefaultAsync(x => x.Id == dto.WalletId);
 
-            wallet.Block(dto.Reason);
+            //Guard.Against.Null(wallet, message: "Wallet does not exists");
 
-            _context.Wallets.Add(wallet);
-            await _context.SaveChangesAsync();
+            //wallet.Block(dto.Reason);
 
-            return true;
+            //_context.Wallets.Add(wallet);
+            //await _context.SaveChangesAsync();
+
+            //return true;
         }
     }
 }

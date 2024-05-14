@@ -10,6 +10,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Application.IntegrationTests\Market\**" />
+    <Compile Remove="Application.IntegrationTests\Payment\**" />
+    <Compile Remove="Application.IntegrationTests\User\**" />
+    <EmbeddedResource Remove="Application.IntegrationTests\Market\**" />
+    <EmbeddedResource Remove="Application.IntegrationTests\Payment\**" />
+    <EmbeddedResource Remove="Application.IntegrationTests\User\**" />
+    <None Remove="Application.IntegrationTests\Market\**" />
+    <None Remove="Application.IntegrationTests\Payment\**" />
+    <None Remove="Application.IntegrationTests\User\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -31,7 +43,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CursesOnline\LMS.csproj" />
     <ProjectReference Include="..\LMS\LMS.csproj" />
   </ItemGroup>
 
@@ -40,12 +51,6 @@
     <Using Include="NUnit.Framework" />
     <Using Include="System.Text.RegularExpressions" />
     <Using Include="System.Threading.Tasks" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Application.IntegrationTests\User\" />
-    <Folder Include="Application.IntegrationTests\Payment\" />
-    <Folder Include="Application.IntegrationTests\Market\" />
   </ItemGroup>
 
 </Project>

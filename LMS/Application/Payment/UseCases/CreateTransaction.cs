@@ -11,7 +11,7 @@ namespace LMS.Application.Payment.UseCases
 
         public async Task<TransactionEntity> Execute(CreateTransactionDto dto)
         {
-            return new();
+            throw new NotImplementedException();
         }
     }
 }

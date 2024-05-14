@@ -9,7 +9,11 @@ namespace LMS.Infrastructure.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<UserEntity> builder)
         {
-            builder.Property(t => t.UserName)
+            builder.Property(t => t.Surname)
+                .HasMaxLength(200)
+                .IsRequired();
+
+            builder.Property(t => t.Name)
                 .HasMaxLength(200)
                 .IsRequired();
         }

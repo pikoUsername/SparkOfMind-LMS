@@ -29,8 +29,8 @@ namespace LMS.Application.Payment.UseCases
 
             Guard.Against.Null(wallet, message: "Wallet does not exists");
 
-            await _accessPolicy.FailIfNotSelfOrNoAccess(
-                wallet.UserId, UserRoles.Moderator);
+            //await _accessPolicy.FailIfNotSelfOrNoAccess(
+            //    wallet.UserId, UserRoles.Moderator);
 
             var result = await _context.Transactions
                 .IncludeStandard()

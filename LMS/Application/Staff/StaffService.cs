@@ -5,6 +5,7 @@ namespace LMS.Application.Staff
 {
     public class StaffService : IStaffService
     {
+        // unused, but could be used in future! 
         private readonly IServiceProvider _serviceProvider;
 
         public StaffService(IServiceProvider serviceProvider)

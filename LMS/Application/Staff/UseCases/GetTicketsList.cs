@@ -23,19 +23,19 @@ namespace LMS.Application.Staff.UseCases
             IQueryable<TicketEntity> query = _context.Tickets;
             var currentUser = await _accessPolicy.GetCurrentUser();
 
-            if (dto.UserId != currentUser.Id && !await _accessPolicy.CanAccess(UserRoles.Moderator))
-            {
-                throw new AccessDenied("You are not ticket owner, or something like that");
-            }
+            //if (dto.UserId != currentUser.Id && !await _accessPolicy.CanAccess(UserRoles.Moderator))
+            //{
+            //    throw new AccessDenied("You are not ticket owner, or something like that");
+            //}
 
             if (dto.UserId != null)
             {
                 query = query.Where(x => x.CreatedBy.Id == dto.UserId);
             }
 
-            if (dto.Subject != null)
+            if (dto.SubjectId != null)
             {
-                query = query.Where(x => x.Subject == dto.Subject);
+                query = query.Where(x => x.Subject.Id == dto.SubjectId);
             }
 
             if (dto.IsAssignedToMe == true)

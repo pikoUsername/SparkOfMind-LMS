@@ -71,18 +71,18 @@ namespace LMS.Infrastructure.Data
         public async Task TrySeedAsync()
         {
             // Default users
-            var administrator = new UserEntity { UserName = "admin", Email = "admin@localhost" };
+            //var administrator = new UserEntity { UserName = "admin", Email = "admin@localhost" };
 
-            if (_context.Users.All(u => u.UserName != administrator.UserName))
-            {
-                await _userService.Create().Execute(new CreateUserDto()
-                {
-                    UserName = administrator.UserName,
-                    EmailAddress = administrator.Email,
-                    Password = administrator.UserName,
-                    Role = UserRoles.SuperAdmin
-                });
-            }
+            //if (_context.Users.All(u => u.UserName != administrator.UserName))
+            //{
+            //    await _userService.Create().Execute(new CreateUserDto()
+            //    {
+            //        UserName = administrator.UserName,
+            //        EmailAddress = administrator.Email,
+            //        Password = administrator.UserName,
+            //        Role = UserRoles.SuperAdmin
+            //    });
+            //}
 
             // Default data
             // Seed, if necessary
