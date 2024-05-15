@@ -3,6 +3,7 @@ using LMS.Application.Common.UseCases;
 using LMS.Application.User.Dto;
 using LMS.Domain.User.Entities;
 using LMS.Domain.User.Enums;
+using LMS.Infrastructure.Data.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Application.User.UseCases
@@ -20,35 +21,33 @@ namespace LMS.Application.User.UseCases
 
         public async Task<ICollection<NotificationEntity>> Execute(GetNotificationsDto dto)
         {
-            throw new NotImplementedException();
+            var query = _context.Notifications.AsQueryable();
 
-            //var query = _context.Notifications.AsQueryable();
+            if (dto.UserId != null)
+            {
+                await _accessPolicy.EnforceIsAllowed(
+                    "read", _context.Notifications.EntityType, (Guid)dto.UserId); 
 
-            //if (dto.UserId != null)
-            //{
-            //    await _accessPolicy.FailIfNotSelfOrNoAccess(
-            //        (Guid)dto.UserId, UserRoles.Moderator);
+                query = query.Where(x => x.ToUserId == dto.UserId);
+            }
+            if (dto.Role != null)
+            {
+                await _accessPolicy.Role(UserRoles.Admin);
 
-            //    query = query.Where(x => x.ToUserId == dto.UserId);
-            //}
-            //if (dto.Role != null)
-            //{
-            //    await _accessPolicy.FailIfNoAccess(UserRoles.Moderator);
+                query = query
+                    .Join(
+                        _context.Users,
+                        notification => notification.ToUserId,
+                        user => user.Id,
+                        (notification, user) => new { Notification = notification, User = user }
+                    )
+                    .Where(x => x.User.Roles.All(x => x.Role == dto.Role))
+                    .Select(x => x.Notification);
+            }
 
-            //    query = query
-            //        .Join(
-            //            _context.Users,
-            //            notification => notification.ToUserId,
-            //            user => user.Id,
-            //            (notification, user) => new { Notification = notification, User = user }
-            //        )
-            //        .Where(x => x.User.Role == dto.Role)
-            //        .Select(x => x.Notification);
-            //}
+            query = query.Paginate(dto.Start, dto.Ends);
 
-            ////query = query.Paginate(dto.Start, dto.Ends); 
-
-            //return await query.AsNoTracking().ToListAsync();
+            return await query.AsNoTracking().ToListAsync();
         }
     }
 }

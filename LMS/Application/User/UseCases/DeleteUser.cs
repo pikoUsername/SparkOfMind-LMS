@@ -22,16 +22,16 @@ namespace LMS.Application.User.UseCases
 
         public async Task<UserEntity> Execute(DeleteUserDto dto)
         {
-            throw new NotImplementedException();
+            await AccessPolicy.EnforceRole(UserRoles.Admin); 
 
-            //var user = await Context.Users.FirstOrDefaultAsync(x => x.Id == dto.UserId);
-            //if (user == null)
-            //    throw new EntityDoesNotExists(nameof(UserEntity), "");
+            var user = await Context.Users.FirstOrDefaultAsync(x => x.Id == dto.UserId);
+            if (user == null)
+                throw new EntityDoesNotExists(nameof(UserEntity), "");
 
-            //Context.Users.Remove(user);
-            //await Context.SaveChangesAsync();
+            Context.Users.Remove(user);
+            await Context.SaveChangesAsync();
 
-            //return user;
+            return user;
         }
     }
 }

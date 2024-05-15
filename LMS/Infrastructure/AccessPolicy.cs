@@ -1,5 +1,6 @@
 ﻿using LMS.Application.Common.Interfaces;
 using LMS.Domain.User.Entities;
+using LMS.Domain.User.Enums;
 using LMS.Domain.User.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,8 +18,10 @@ namespace LMS.Infrastructure
             _currentUser = user;
         }
 
-        public Task<bool> IsAllowed(IAccessUser actor, string action, object relation)
+        public Task<bool> IsAllowed(string action, object relation, IAccessUser? actor = null)
         {
+            if (actor == null) 
+                actor = (IAccessUser)GetCurrentUser(); 
             foreach (var permissionAcl in actor.GetPermissions())
             {
                 if (CheckPermission(permissionAcl.Join(), action, relation))
@@ -29,11 +32,13 @@ namespace LMS.Infrastructure
             return Task.FromResult(false);
         }
 
-        public Task<bool> Role(IAccessUser actor, string roleName)
+        public Task<bool> Role(UserRoles role, IAccessUser? actor = null)
         {
+            if (actor == null)
+                actor = (IAccessUser)GetCurrentUser();
             foreach (var userRole in actor.GetRoles())
             {
-                if (userRole.Name == roleName)
+                if (userRole.Role == role)
                 {
                     return Task.FromResult(true); 
                 }
@@ -41,9 +46,9 @@ namespace LMS.Infrastructure
             return Task.FromResult(false);
         }
 
-        public async Task<bool> Relationship(IAccessUser actor, string action, object relation, Guid ownerId)
+        public async Task<bool> Relationship(string action, object relation, Guid ownerId, IAccessUser? actor = null)
         {
-            var result = await IsAllowed(actor, action, relation) || ownerId == actor.Id; 
+            var result = await IsAllowed(action, relation, actor) || ownerId == actor.Id; 
             if (!result)
             {
                 throw new AccessDenied("relationship check failed"); 
@@ -69,27 +74,44 @@ namespace LMS.Infrastructure
             return _cachedCurrentUser;
         }
 
-        public async Task EnforceIsAllowed(IAccessUser actor, string action, object relation)
+        private async Task<UserEntity> GetUserById(Guid userId)
         {
-            var allowed = await IsAllowed(actor, action, relation);
+            var user = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == userId);
+
+            Guard.Against.Null(user, message: "Actor does not exists");
+
+            return user; 
+        }
+
+        public async Task EnforceIsAllowed(string action, object relation, Guid? actorId = null)
+        {
+            var actor = actorId.HasValue ? await GetUserById(actorId.Value) : await GetCurrentUser();
+
+            var allowed = await IsAllowed(action, relation, actor);
             if (!allowed)
             {
                 throw new AccessDenied($"User is not allowed to perform action '{action}' on relation '{relation}'");
             }
         }
 
-        public async Task EnforceRole(IAccessUser actor, string role)
+        public async Task EnforceRole(UserRoles role, Guid? actorId = null)
         {
-            var hasRole = await Role(actor, role);
+            var actor = actorId.HasValue ? await GetUserById(actorId.Value) : await GetCurrentUser();
+
+            var hasRole = await Role(role, actor);
             if (!hasRole)
             {
                 throw new AccessDenied($"User does not have the required role '{role}'");
             }
         }
 
-        public async Task EnforceRelationship(IAccessUser actor, string action, object relation, Guid ownerId)
+        public async Task EnforceRelationship(string action, object relation, Guid ownerId, Guid? actorId = null)
         {
-            var allowed = await Relationship(actor, action, relation, ownerId);
+            var actor = actorId.HasValue ? await GetUserById(actorId.Value) : await GetCurrentUser();
+
+            var allowed = await Relationship(action, relation, ownerId, actor);
             if (!allowed)
             {
                 throw new AccessDenied($"User is not allowed to perform action '{action}' on relation '{relation}' with ownerId '{ownerId}'");
@@ -101,15 +123,41 @@ namespace LMS.Infrastructure
             var parts = permissionAcl.Split(':');
             if (parts.Length != 3)
             {
-                throw new Exception(
-                    $"Pemissions acl of the user has been compromised, parts: {parts}, acl: {permissionAcl}");
+                throw new Exception($"Permissions acl of the user has been compromised, parts: {parts}, acl: {permissionAcl}");
             }
+
             var subjectName = parts[0];
             var subjectId = parts[1];
             var subjectAction = parts[2];
 
-            return (subjectId == relation.ToString() || subjectId == "*") && subjectName == relation.GetType().Name && subjectAction == action; 
+            // Проверка на null и получение идентификатора сущности
+            string entityId = GetEntityId(relation);
+
+            // Проверка соответствия разрешений
+            return (subjectId == entityId || subjectId == "*")
+                && subjectName == relation.GetType().Name
+                && subjectAction == action;
         }
 
+        // Метод для получения идентификатора сущности
+        private string GetEntityId(object relation)
+        {
+            if (relation == null)
+            {
+                throw new ArgumentNullException(nameof(relation), "Relation object cannot be null.");
+            }
+
+            if (relation is string stringRelation)
+            {
+                return stringRelation;
+            }
+
+            if (relation is BaseEntity entity)
+            {
+                return entity.Id.ToString();
+            }
+
+            throw new ArgumentException($"{nameof(relation)} entity is not convertible to BaseEntity", nameof(relation));
+        }
     }
 }

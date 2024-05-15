@@ -19,17 +19,15 @@ namespace LMS.Application.Payment.UseCases
 
         public async Task<bool> Execute(BalanceOperationDto dto)
         {
-            throw new NotImplementedException();
+            await _accessPolicy.EnforceRole(UserRoles.Admin);
 
-            ////await _accessPolicy.FailIfNoAccess(UserRoles.Admin);
+            var wallet = await _context.Wallets.FirstOrDefaultAsync(x => x.Id == dto.WalletId);
 
-            //var wallet = await _context.Wallets.FirstOrDefaultAsync(x => x.Id == dto.WalletId);
+            Guard.Against.Null(wallet, message: "Wallet does not exists");
 
-            //Guard.Against.Null(wallet, message: "Wallet does not exists");
+            wallet.AddBalance(dto.Balance);
 
-            //wallet.AddBalance(dto.Balance);
-
-            //return true;
+            return true;
         }
     }
 }

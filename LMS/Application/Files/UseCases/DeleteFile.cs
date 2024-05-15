@@ -30,31 +30,29 @@ namespace LMS.Application.Files.UseCases
 
         public async Task<bool> Execute(DeleteFileDto dto)
         {
-            throw new NotImplementedException();
+            if (!dto.Directly)
+            {
+                if (!await _accessPolicy.Role(UserRoles.Admin))
+                {
+                    return false;
+                }
+            }
+            var file = await _context.Files.FirstOrDefaultAsync(x => x.Id == dto.FileId);
 
-            //if (!dto.Directly)
-            //{
-            //    if (!await _accessPolicy.CanAccess(UserRoles.SuperAdmin))
-            //    {
-            //        return false;
-            //    }
-            //}
-            //var file = await _context.Files.FirstOrDefaultAsync(x => x.Id == dto.FileId);
+            if (file == null)
+            {
+                return false;
+            }
 
-            //if (file == null)
-            //{
-            //    return false;
-            //}
+            await _fileStorageAdapter.DeleteFileAsync(file.FilePath);
 
-            //await _fileStorageAdapter.DeleteFileAsync(file.FilePath);
+            // very important dont remove, it will cause silent deletion ALL
+            // of files if someone does hacking stuff in SuperUser user
+            await _eventDispatcher.Dispatch(new FileDeleted(file), _context);
+            _context.Files.Remove(file);
+            await _context.SaveChangesAsync();
 
-            //// very important dont remove, it will cause silent deletion ALL
-            //// of files if someone does hacking stuff in SuperUser user
-            //await _eventDispatcher.Dispatch(new FileDeleted(file), _context);
-            //_context.Files.Remove(file);
-            //await _context.SaveChangesAsync();
-
-            //return true;
+            return true;
         }
     }
 }

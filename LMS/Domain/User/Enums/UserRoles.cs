@@ -10,5 +10,6 @@ namespace LMS.Domain.User.Enums
         User,
         Admin,
         Owner,
+        Superadmin 
     }
 }

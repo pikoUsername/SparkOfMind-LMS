@@ -21,22 +21,20 @@ namespace LMS.Application.User.UseCases
 
         public async Task<ICollection<UserEntity>> Execute(GetListUserDto dto)
         {
-            throw new NotImplementedException();
+            var query = _context.Users
+                .IncludeStandard()
+                .AsQueryable();
+            if (!string.IsNullOrEmpty(dto.Fullname))
+            {
+                query = query.Where(x => x.Fullname == dto.Fullname);
+            }
+            if (dto.Role != null)
+            {
+                query = query.Where(x => x.Roles.Any(x => x.Role == dto.Role));
+            }
+            var result = await query.ToListAsync();
 
-            //var query = _context.Users
-            //    .IncludeStandard()
-            //    .AsQueryable();
-            //if (!string.IsNullOrEmpty(dto.Name))
-            //{
-            //    query = query.Where(x => x.UserName == dto.Name);
-            //}
-            //if (dto.Role != null)
-            //{
-            //    query = query.Where(x => x.Role == dto.Role);
-            //}
-            //var result = await query.ToListAsync();
-
-            //return result;
+            return result;
         }
     }
 

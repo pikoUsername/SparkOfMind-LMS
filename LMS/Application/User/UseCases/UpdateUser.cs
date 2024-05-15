@@ -40,14 +40,22 @@ namespace LMS.Application.User.UseCases
 
             Guard.Against.Null(byUser, message: "User does not exists");
 
+            if (byUser.Id != user.Id || !await AccessPolicy.IsAllowed("edit", user, byUser))
+            {
+                throw new AccessDenied("User access denied"); 
+            }
             if (dto.Email != null)
             {
                 user.Email = dto.Email;
             }
-            //if (dto.Name != null)
-            //{
-            //    user.UserName = dto.Name;
-            //}
+            if (dto.Name != null)
+            {
+                user.Name = dto.Name;
+            }
+            if (dto.Surname != null)
+            {
+                user.Surname = dto.Surname; 
+            }
             if (dto.TelegramId != null)
             {
                 user.TelegramId = dto.TelegramId;
@@ -59,18 +67,21 @@ namespace LMS.Application.User.UseCases
                     newPassword: dto.NewPassword,
                     passwordService: PasswordService);
             }
-            //if (dto.Role != null)
-            //{
-            //    if (byUser.Role == UserRoles.Owner)
-            //    {
-            //        user.UpdateRole(
-            //            (UserRoles)dto.Role);
-            //    }
-            //    else
-            //    {
-            //        throw new AccessDenied(null);
-            //    }
-            //}
+            if (dto.Role != null)
+            {
+                if (await AccessPolicy.IsAllowed("edit", user, byUser))
+                {
+                    var role = await Context.Roles.FirstOrDefaultAsync(x => x.Role == dto.Role);
+
+                    Guard.Against.Null(role, message: "Role does not exists"); 
+
+                    user.AddRole(role); 
+                }
+                else
+                {
+                    throw new AccessDenied(null);
+                }
+            }
             if (dto.Avatar != null)
             {
                 user.Image = await _fileService.UploadFile().Execute(dto.Avatar);

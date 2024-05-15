@@ -6,6 +6,7 @@ using LMS.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 using System.Text.Json.Serialization;
 
 namespace LMS.Domain.User.Entities
@@ -148,8 +149,7 @@ namespace LMS.Domain.User.Entities
 
         public void AddRole(RoleEntity role)
         {
-            if (Roles.Select(x => x.Role).Any(x => x == role.Role) 
-                && Roles.Select(x => x.Name).Any(x => x == role.Name))
+            if (Roles.Select(x => x.Role).Any(x => x == role.Role))
             {
                 return; 
             }
