@@ -1,5 +1,6 @@
 ﻿using LMS.Application.Common.Interfaces;
 using LMS.Domain.Payment.Entities;
+using LMS.Domain.User.Entities;
 using LMS.Domain.User.Events;
 using LMS.Infrastructure.EventDispatcher;
 
@@ -21,6 +22,8 @@ namespace LMS.Application.User.EventHandlers
             _context.Wallets.Add(wallet);
 
             _logger.LogInformation($"User created with id: {eventValue.User.Id}");
+
+            eventValue.User.AddPermissionWithCode(nameof(WalletEntity), wallet.Id.ToString(), "*"); 
 
             return Task.CompletedTask;
         }
