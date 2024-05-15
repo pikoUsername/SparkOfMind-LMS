@@ -37,7 +37,8 @@ namespace LMS.Application.User.UseCases
                 passwordService: passwordService
             );
 
-            await _context.Users.AddAsync(newUser);
+            _context.Users.Add(newUser);
+            newUser.AddPermissionWithCode(nameof(UserEntity), newUser.Id.ToString(), "*"); 
             await _context.SaveChangesAsync();
 
             return newUser;
