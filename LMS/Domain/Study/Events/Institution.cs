@@ -27,4 +27,9 @@ namespace LMS.Domain.Study.Events
     public class InstitutionRoleCreated(InstitutionRolesEntity entity) : DomainEvent {
         public InstitutionRolesEntity Role { get; set; } = entity; 
     }
+
+    public class InstitutionBlocked(InstitutionEntity institution, string reason) : DomainEvent {
+        public InstitutionEntity Institution { get; set; } = institution;
+        public string Reason { get; set; } = reason; 
+    }
 }

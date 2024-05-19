@@ -5,6 +5,7 @@ using LMS.Domain.Payment.ValueObjects;
 using LMS.Domain.Payment.Enums;
 using LMS.Domain.Payment.Events;
 using LMS.Domain.Payment.Exceptions;
+using LMS.Domain.Study.Entities;
 
 namespace LMS.Domain.Payment.Entities
 {
@@ -25,8 +26,12 @@ namespace LMS.Domain.Payment.Entities
 
         [Required]
         public PurchaseStatus Status { get; set; }
-        //[ForeignKey(nameof(ReviewEntity))]
-        //public Guid? ReviewId { get; set; }
+        [ForeignKey(nameof(ReviewEntity))]
+        public Guid? ReviewId { get; set; }
+
+        [Required]
+        [ForeignKey(nameof(CourseEntity))]
+        public Guid CourseId { get; set; } 
 
         [Required]
         public TransactionEntity Transaction { get; set; } = null!;
@@ -34,14 +39,12 @@ namespace LMS.Domain.Payment.Entities
         [MaxLength(256)]
         public string? StatusDescription { get; set; } = null!;
 
-        public static PurchaseEntity Create(WalletEntity wallet, TransactionEntity transaction)
+        public static PurchaseEntity Create(WalletEntity wallet, TransactionEntity transaction, CourseEntity course)
         {
-            throw new NotImplementedException();
-
             var purchase = new PurchaseEntity
             {
                 Wallet = wallet,
-                //Product = product,
+                CourseId = course.Id,
                 Amount = transaction.Amount,
                 Currency = transaction.Amount.Currency,
                 Transaction = transaction,
@@ -59,14 +62,14 @@ namespace LMS.Domain.Payment.Entities
             StatusDescription = description;
         }
 
-        //public void Complete(ReviewEntity review)
-        //{
-        //    if (Status == PurchaseStatus.Success || Completed)
-        //        throw new PurchaseIsAlreadyCompleted(Id);
+        public void Complete(ReviewEntity review)
+        {
+            if (Status == PurchaseStatus.Success || Completed)
+                throw new PurchaseIsAlreadyCompleted(Id);
 
-        //    Completed = true;
-        //    ReviewId = review.Id;
-        //    Status = PurchaseStatus.Success;
-        //}
+            Completed = true;
+            ReviewId = review.Id;
+            Status = PurchaseStatus.Success;
+        }
     }
 }

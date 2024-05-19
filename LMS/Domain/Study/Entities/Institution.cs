@@ -28,8 +28,10 @@ namespace LMS.Domain.Study.Entities
         public ICollection<FileEntity> Images { get; set; } = [];
         [Required, ForeignKey(nameof(UserEntity))]
         public Guid OwnerId { get; init; }  // not allowed to change owners of institution!!! 
-        public decimal Fee { get; private set; } = 0; 
-        public bool Deleted { get; private set; }
+        public decimal Fee { get; private set; } = 0;
+        public bool Deleted { get; private set; } = false;
+        public bool Blocked { get; private set; } = false;
+        public string? BlockedReason { get; private set; } 
 
         public static InstitutionEntity Create(
             string name, 
@@ -67,6 +69,15 @@ namespace LMS.Domain.Study.Entities
             Email = email;
 
             AddDomainEvent(new InstitutionEmailChanged(this));
+        }
+
+        public void Block(string reason)
+        {
+            if (Blocked || Deleted)
+                throw new InvalidOperationException("Institution is already deleted");
+            Blocked = true;
+            BlockedReason = reason;
+            AddDomainEvent(new InstitutionBlocked(this, reason)); 
         }
     }
 }

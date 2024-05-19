@@ -35,12 +35,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Study\Interfaces\" />
-    <Folder Include="Application\Study\Dto\" />
     <Folder Include="Application\Study\EventHandlers\" />
     <Folder Include="Application\Study\Exceptions\" />
-    <Folder Include="Application\Study\UseCases\Institution\" />
-    <Folder Include="Application\Study\UseCases\Grade\" />
     <Folder Include="Application\Study\UseCases\Schedule\" />
   </ItemGroup>
 

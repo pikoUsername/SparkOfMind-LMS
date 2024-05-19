@@ -31,7 +31,7 @@ namespace LMS.Application.User.UseCases
             }
 
             var newUser = UserEntity.Create(
-                fullname: dto.UserName,
+                fullname: dto.Surname + " " + dto.Name,
                 email: dto.EmailAddress,
                 password: dto.Password,
                 passwordService: passwordService

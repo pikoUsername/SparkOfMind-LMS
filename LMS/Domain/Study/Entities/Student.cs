@@ -52,7 +52,8 @@ namespace LMS.Domain.Study.Entities
         public DateOnly? BirthDate { get; set; }
         [Required]
         public string? Address { get; set; } = null!;
-        public ICollection<StudentCourseEntity> Courses { get; set; } = []; 
+        public ICollection<StudentCourseEntity> Courses { get; set; } = [];
+        public UserEntity User { get; set; } = null!; 
 
         public static StudentEntity CreateFromUser(UserEntity user, UserEntity parent, Guid institutionId, StudentStatus status)
         {
@@ -66,6 +67,7 @@ namespace LMS.Domain.Study.Entities
                 Phone = user.Phone, 
                 Status = status,
                 FullName = user.Fullname, 
+                User = user, 
                 ParentId = parent.Id,
             };
 

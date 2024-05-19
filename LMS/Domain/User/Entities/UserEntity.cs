@@ -57,6 +57,7 @@ namespace LMS.Domain.User.Entities
         public bool IsSuperadmin { get; set; } = false;
         public ICollection<PermissionEntity> Permissions { get; set; } = [];
         public ICollection<GroupEntity> Groups { get; set; } = [];
+        [Phone]
         public string? Phone { get; set; } 
 
         [NotMapped]
@@ -190,16 +191,14 @@ namespace LMS.Domain.User.Entities
         {
             // is it cachable? intersting...
             var permissions = new List<IPermissionEntity>();
-
+            if (Blocked)
+            {
+                return []; 
+            }
             permissions.AddRange(Permissions);
             foreach (var group in Groups) {
                 permissions.AddRange(group.Permissions); 
             }
-            foreach (var role in Roles)
-            {
-                permissions.AddRange(role.Permissions);
-            }
-
             return permissions;
         }
     }
