@@ -1,4 +1,5 @@
-﻿using LMS.Domain.Study.Entities;
+﻿using LMS.Domain.Payment.Entities;
+using LMS.Domain.Study.Entities;
 
 namespace LMS.Domain.Study.Events
 {
@@ -7,8 +8,9 @@ namespace LMS.Domain.Study.Events
         public StudentCourseEntity StudentCourse { get; set; } = student; 
     }
 
-    public class StudentCreated(StudentEntity student) : DomainEvent
+    public class StudentCreated(StudentEntity student, PurchaseEntity purchase) : DomainEvent
     {
+        public PurchaseEntity Purchase { get; set; } = purchase; 
         public StudentEntity Student { get; set; } = student; 
     }
 }

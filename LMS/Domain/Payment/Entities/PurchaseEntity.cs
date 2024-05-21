@@ -6,6 +6,7 @@ using LMS.Domain.Payment.Enums;
 using LMS.Domain.Payment.Events;
 using LMS.Domain.Payment.Exceptions;
 using LMS.Domain.Study.Entities;
+using LMS.Domain.User.Entities;
 
 namespace LMS.Domain.Payment.Entities
 {
@@ -16,31 +17,38 @@ namespace LMS.Domain.Payment.Entities
         public CurrencyEnum Currency { get; set; }
 
         [Required]
-        public Money Amount { get; set; } = new(0);
+        public Money Amount { get; init; } = new(0);
 
         [Required]
-        public WalletEntity Wallet { get; set; } = null!;
+        public WalletEntity Wallet { get; init; } = null!;
 
         [Required]
-        public bool Completed { get; set; } = false;
+        public bool Completed { get; private set; } = false;
 
         [Required]
         public PurchaseStatus Status { get; set; }
         [ForeignKey(nameof(ReviewEntity))]
-        public Guid? ReviewId { get; set; }
+        public Guid? ReviewId { get; private set; }
 
         [Required]
         [ForeignKey(nameof(CourseEntity))]
-        public Guid CourseId { get; set; } 
+        public Guid CourseId { get; init; } 
 
         [Required]
-        public TransactionEntity Transaction { get; set; } = null!;
+        public TransactionEntity Transaction { get; private set; } = null!;
+        [Required]
+        // required for two step confirmation
+        public bool Confirmed { get; private set; } = false; 
 
         [MaxLength(256)]
         public string? StatusDescription { get; set; } = null!;
+        [Required]
+        public UserEntity CreatedBy { get; set; } = null!; 
 
         public static PurchaseEntity Create(WalletEntity wallet, TransactionEntity transaction, CourseEntity course)
         {
+            if (wallet.User == null)
+                throw new ArgumentException("Wallet entity does not have user value, load it!"); 
             var purchase = new PurchaseEntity
             {
                 Wallet = wallet,
@@ -48,7 +56,8 @@ namespace LMS.Domain.Payment.Entities
                 Amount = transaction.Amount,
                 Currency = transaction.Amount.Currency,
                 Transaction = transaction,
-                Status = PurchaseStatus.Processing
+                Status = PurchaseStatus.Processing, 
+                CreatedBy = wallet.User, 
             };
 
             purchase.AddDomainEvent(new PurchaseCreated(purchase));
@@ -70,6 +79,15 @@ namespace LMS.Domain.Payment.Entities
             Completed = true;
             ReviewId = review.Id;
             Status = PurchaseStatus.Success;
+        }
+
+        public void Confirm()
+        {
+            if (Status != PurchaseStatus.Success)
+
+            Confirmed = true;
+
+            AddDomainEvent(new PurchaseConfirmed(this)); 
         }
     }
 }

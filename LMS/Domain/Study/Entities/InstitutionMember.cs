@@ -1,5 +1,6 @@
 ﻿using LMS.Domain.Study.Events;
 using LMS.Domain.User.Entities;
+using LMS.Domain.User.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -38,6 +39,18 @@ namespace LMS.Domain.Study.Entities
             Roles.AddRange(roles);
 
             AddDomainEvent(new MemberRolesChanged(this, roles));
+        }
+
+        public List<PermissionEntity> GetAllPermissions()
+        {
+            List<PermissionEntity> allPerms = []; 
+
+            foreach (var role in Roles)
+            {
+                allPerms.AddRange(role.Permissions);
+            }
+
+            return allPerms;
         }
     }
 }

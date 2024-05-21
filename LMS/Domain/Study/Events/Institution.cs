@@ -32,4 +32,10 @@ namespace LMS.Domain.Study.Events
         public InstitutionEntity Institution { get; set; } = institution;
         public string Reason { get; set; } = reason; 
     }
+
+    public class InstitutionRolePermissionAdded(InstitutionEntity institution, InstitutionRolesEntity role) : DomainEvent
+    {
+        public InstitutionRolesEntity Role { get; } = role;
+        public InstitutionEntity Institution { get; } = institution; 
+    }
 }

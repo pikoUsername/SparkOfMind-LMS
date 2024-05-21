@@ -17,7 +17,7 @@ namespace LMS.Application.Study.Dto
         public GenderTypes Gender { get; set; }
         public DateTime? DateOfBirth { get; set; } 
         public int? Age { get; set; }
-        [Required]
+        [Required, Phone]
         public string Phone { get; set; } = null!; 
     }
 }

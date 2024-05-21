@@ -18,15 +18,16 @@ namespace LMS.Domain.Study.Entities
         [Required, ForeignKey(nameof(CourseEntity))]
         public Guid CourseId { get; set; }
         [Required]
-        public bool Completed { get; set; } = false;
+        public bool Completed { get; private set; } = false;
         [Required]
-        public bool Rejected { get; set; } = false; 
+        public bool Rejected { get; private set; } = false; 
+
 
         public static StudentCourseEntity Create(Guid studentId, DateTime admissionDate, Guid purchaseId, Guid courseId)
         {
             var studentCourse = new StudentCourseEntity()
             {
-                StudentId = studentId,
+                StudentId = studentId, 
                 AdmissionDate = admissionDate,
                 PurchaseId = purchaseId,
                 CourseId = courseId,

@@ -35,6 +35,7 @@ namespace LMS.Application.Common.Interfaces
 
         // Study 
         DbSet<StudentEntity> Students { get; set; }
+        DbSet<StudentCourseEntity> StudentCourses { get; set; }
         DbSet<InstitutionEntity> Institutions { get; set; }
         DbSet<AssignmentEntity> Assigments { get; set; }
         DbSet<AttendanceEntity> Attendance { get; set; }
