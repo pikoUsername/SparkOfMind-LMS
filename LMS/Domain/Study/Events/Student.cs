@@ -8,9 +8,8 @@ namespace LMS.Domain.Study.Events
         public StudentCourseEntity StudentCourse { get; set; } = student; 
     }
 
-    public class StudentCreated(StudentEntity student, PurchaseEntity purchase) : DomainEvent
+    public class StudentCreated(StudentEntity student) : DomainEvent
     {
-        public PurchaseEntity Purchase { get; set; } = purchase; 
         public StudentEntity Student { get; set; } = student; 
     }
 }

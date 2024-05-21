@@ -44,7 +44,7 @@ namespace LMS.Domain.Study.Entities
     {
         [ForeignKey(nameof(UserEntity)), Required]
         public Guid ParentId { get; set; }
-        public string FullName { get; set; } = null!; 
+        //public string FullName { get; set; } = null!; 
         public string? Phone { get; set; } 
         [Required]
         public StudentStatus Status { get; set; }
@@ -67,7 +67,6 @@ namespace LMS.Domain.Study.Entities
                 InstitutionMember = member, 
                 Phone = user.Phone, 
                 Status = status,
-                FullName = user.Fullname, 
                 User = user, 
                 ParentId = parent.Id,
             };

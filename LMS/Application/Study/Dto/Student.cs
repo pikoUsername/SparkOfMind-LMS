@@ -20,4 +20,11 @@ namespace LMS.Application.Study.Dto
         [Required, Phone]
         public string Phone { get; set; } = null!; 
     }
+
+    public class GetStudentDto
+    {
+        public Guid? StudentId { get; set; }
+        public string? Fullname { get; set; } 
+        public string? Phone { get; set; }
+    }
 }

@@ -68,15 +68,21 @@ namespace LMS.Application.Study.UseCases.Student
                     }); 
 
                 student = StudentEntity.CreateFromUser(
-                    user, purchase.CreatedBy, dto.InstitutionId, StudentStatus.Waiting); 
+                    user, purchase.CreatedBy, dto.InstitutionId, StudentStatus.Waiting);
+
+                _context.Students.Add(student);
+            } else
+            {
+
+                _context.Students.Update(student);
             }
             var course = await _context.Courses.FirstOrDefaultAsync(x => x.Id == purchase.CourseId);
 
             Guard.Against.Null(course, message: "This course does not exists"); 
 
-            var studentCourse = StudentCourseEntity.Create(student.Id, course.StartsAt ?? DateTime.Now, purchase.Id, course.Id); 
+            var studentCourse = StudentCourseEntity.Create(student.Id, course.StartsAt ?? DateTime.Now, purchase.Id, course.Id);
+            student.Courses.Add(studentCourse); 
 
-            _context.Students.Add(student);
             _context.StudentCourses.Add(studentCourse); 
             await _context.SaveChangesAsync(); 
 
