@@ -20,27 +20,25 @@ namespace LMS.Application.Staff.UseCases
 
         public async Task<TicketEntity> Execute(GetTicketDto dto)
         {
-            throw new NotImplementedException();
+            Guard.Against.Null(dto, nameof(dto));
+            Guard.Against.Null(dto.TicketId, nameof(dto.TicketId));
 
-            //Guard.Against.Null(dto, nameof(dto));
-            //Guard.Against.Null(dto.TicketId, nameof(dto.TicketId));
+            var currentUser = await _accessPolicy.GetCurrentUser();
 
-            //var currentUser = await _accessPolicy.GetCurrentUser();
-
-            //// Ensure only the creator of the ticket or higher role can access the ticket
-            //var ticket = await _context.Tickets
-            //    .Include(x => x.Comments)
-            //    .AsNoTracking()
-            //    .FirstOrDefaultAsync(x => x.Id == dto.TicketId);
-            //Guard.Against.Null(ticket, $"Ticket with ID {dto.TicketId} not found.");
+            // Ensure only the creator of the ticket or higher role can access the ticket
+            var ticket = await _context.Tickets
+                .Include(x => x.Comments)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == dto.TicketId);
+            Guard.Against.Null(ticket, $"Ticket with ID {dto.TicketId} not found.");
 
 
-            //if (ticket.CreatedBy.Id != currentUser.Id && !await _accessPolicy.CanAccess(UserRoles.Moderator))
-            //{
-            //    throw new AccessDenied("You are not authorized to access this ticket.");
-            //}
+            if (ticket.CreatedBy.Id != currentUser.Id && !await _accessPolicy.IsAllowed(PermissionEnum.read, ticket))
+            {
+                throw new AccessDenied("You are not authorized to access this ticket.");
+            }
 
-            //return ticket;
+            return ticket;
         }
     }
 }

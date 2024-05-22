@@ -3,6 +3,7 @@ using LMS.Application.Common.UseCases;
 using LMS.Application.Files.Interfaces;
 using LMS.Application.User.Dto;
 using LMS.Domain.User.Entities;
+using LMS.Domain.User.Enums;
 using LMS.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,7 +41,7 @@ namespace LMS.Application.User.UseCases
 
             Guard.Against.Null(byUser, message: "User does not exists");
 
-            if (byUser.Id != user.Id || !await AccessPolicy.IsAllowed("edit", user, byUser))
+            if (byUser.Id != user.Id && !await AccessPolicy.IsAllowed(PermissionEnum.edit, user, byUser))
             {
                 throw new AccessDenied("User access denied"); 
             }

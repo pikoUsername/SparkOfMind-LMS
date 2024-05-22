@@ -23,7 +23,7 @@ namespace LMS.Application.User.EventHandlers
 
             _logger.LogInformation($"User created with id: {eventValue.User.Id}");
 
-            eventValue.User.AddPermissionWithCode(nameof(WalletEntity), wallet.Id.ToString(), "*"); 
+            eventValue.User.AddPermissionWithCode(nameof(WalletEntity), wallet.Id, "*"); 
 
             return Task.CompletedTask;
         }

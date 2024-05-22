@@ -171,11 +171,11 @@ namespace LMS.Domain.User.Entities
             AddDomainEvent(new PermissionAdded("USER", permission)); 
         }
 
-        public void AddPermissionWithCode(string subjectName, string subjectId, params string[] actions)
+        public void AddPermissionWithCode(BaseEntity subject, params PermissionEnum[] actions)
         {
             foreach (var action in actions)
             {
-                AddPermission(PermissionEntity.Create(subjectName, subjectId, action)); 
+                AddPermission(PermissionEntity.Create(subject.GetType().Name, subject.Id, action)); 
             }
         }
 

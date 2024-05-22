@@ -23,10 +23,11 @@ namespace LMS.Application.Staff.UseCases
             IQueryable<TicketEntity> query = _context.Tickets;
             var currentUser = await _accessPolicy.GetCurrentUser();
 
-            //if (dto.UserId != currentUser.Id && !await _accessPolicy.CanAccess(UserRoles.Moderator))
-            //{
-            //    throw new AccessDenied("You are not ticket owner, or something like that");
-            //}
+            if (dto.UserId != currentUser.Id 
+                && !await _accessPolicy.IsAllowed(PermissionEnum.read, _context.Tickets.EntityType))
+            {
+                throw new AccessDenied("You are not ticket owner, or something like that");
+            }
 
             if (dto.UserId != null)
             {

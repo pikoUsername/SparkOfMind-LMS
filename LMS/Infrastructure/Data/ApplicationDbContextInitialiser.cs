@@ -2,6 +2,7 @@
 using LMS.Application.User.Dto;
 using LMS.Application.User.Interfaces;
 using LMS.Domain.Payment.Entities;
+using LMS.Domain.Staff.Entities;
 using LMS.Domain.User.Entities;
 using LMS.Domain.User.Enums;
 using LMS.Infrastructure.Adapters.Payment;
@@ -83,6 +84,23 @@ namespace LMS.Infrastructure.Data
             //        Role = UserRoles.SuperAdmin
             //    });
             //}
+
+            if (!_context.Roles.Any())
+            {
+                var adminRole = RoleEntity.Create(
+                    UserRoles.Admin,
+                    PermissionEntity.Create(nameof(TicketEntity), "*", PermissionEnum.all),
+                    PermissionEntity.Create(nameof(TicketCommentEntity), "*", PermissionEnum.all),
+                    PermissionEntity.Create(nameof(PurchaseEntity), "*", PermissionEnum.read),
+                    PermissionEntity.Create(nameof(GroupEntity), "*", PermissionEnum.read),
+                    PermissionEntity.Create(nameof(TransactionEntity), "*", PermissionEnum.read));
+                var ownerRole = RoleEntity.Create(UserRoles.Owner, adminRole.Permissions.ToArray());
+
+                List<RoleEntity> roles = [
+                    adminRole, ownerRole,
+                ];
+                _context.Roles.AddRange(roles); 
+            }
 
             // Default data
             // Seed, if necessary

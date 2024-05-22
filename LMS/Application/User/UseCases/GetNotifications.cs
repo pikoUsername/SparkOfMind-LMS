@@ -26,7 +26,7 @@ namespace LMS.Application.User.UseCases
             if (dto.UserId != null)
             {
                 await _accessPolicy.EnforceIsAllowed(
-                    "read", _context.Notifications.EntityType, (Guid)dto.UserId); 
+                    PermissionEnum.read, _context.Notifications.EntityType, (Guid)dto.UserId); 
 
                 query = query.Where(x => x.ToUserId == dto.UserId);
             }

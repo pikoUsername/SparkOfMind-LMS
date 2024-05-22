@@ -7,5 +7,6 @@
         extend, 
         delete, 
         edit, 
+        all
     }
 }

@@ -6,14 +6,14 @@ namespace LMS.Domain.User.Entities
 {
     public class RoleEntity : BaseAuditableEntity, IRoleEntity
     {
-        public ICollection<PermissionEntity> Permissions { get; set; } = null!;
+        public List<PermissionEntity> Permissions { get; set; } = null!;
         public UserRoles Role { get; set; }
 
-        public static RoleEntity Create(UserRoles roleName, ICollection<PermissionEntity> permissions)
+        public static RoleEntity Create(UserRoles roleName, params PermissionEntity[] permissions)
         {
             var role = new RoleEntity()
             {
-                Permissions = permissions,
+                Permissions = permissions.ToList(),
                 Role = roleName,
             }; 
 

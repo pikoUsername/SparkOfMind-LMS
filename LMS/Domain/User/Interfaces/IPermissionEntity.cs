@@ -4,10 +4,10 @@ namespace LMS.Domain.User.Interfaces
 {
     public interface IPermissionEntity
     {
-        string SubjectName { get; set; } 
-        string SubjectAction { get; set; }
+        string SubjectName { get; set; }
+        List<string> SubjectActions { get; set; }
         string SubjectId { get; set; } 
 
-        public string Join(); 
+        public string[] Join(); 
     }
 }

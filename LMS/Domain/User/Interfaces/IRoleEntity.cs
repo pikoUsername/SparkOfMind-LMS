@@ -5,7 +5,7 @@ namespace LMS.Domain.User.Interfaces
 {
     public interface IRoleEntity
     {
-        ICollection<PermissionEntity> Permissions { get; set; }
+        List<PermissionEntity> Permissions { get; set; }
         UserRoles Role { get; set; }
     }
 }

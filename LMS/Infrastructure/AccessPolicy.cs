@@ -18,13 +18,15 @@ namespace LMS.Infrastructure
             _currentUser = user;
         }
 
-        public Task<bool> IsAllowed(string action, object relation, IAccessUser? actor = null)
+        public Task<bool> IsAllowed(PermissionEnum action, object relation, IAccessUser? actor = null)
         {
             if (actor == null) 
-                actor = (IAccessUser)GetCurrentUser(); 
+                actor = (IAccessUser)GetCurrentUser();
+            if (actor.IsSuperadmin)
+                return Task.FromResult(true);
             foreach (var permissionAcl in actor.GetPermissions())
             {
-                if (CheckPermission(permissionAcl.Join(), action, relation))
+                if (CheckPermissions(permissionAcl.Join(), action, relation))
                 {
                     return Task.FromResult(true);
                 }
@@ -36,6 +38,8 @@ namespace LMS.Infrastructure
         {
             if (actor == null)
                 actor = (IAccessUser)GetCurrentUser();
+            if (actor.IsSuperadmin)
+                return Task.FromResult(true); 
             foreach (var userRole in actor.GetRoles())
             {
                 if (userRole.Role == role)
@@ -46,7 +50,7 @@ namespace LMS.Infrastructure
             return Task.FromResult(false);
         }
 
-        public async Task<bool> Relationship(string action, object relation, Guid ownerId, IAccessUser? actor = null)
+        public async Task<bool> Relationship(PermissionEnum action, object relation, Guid ownerId, IAccessUser? actor = null)
         {
             var result = await IsAllowed(action, relation, actor) || ownerId == actor.Id; 
             if (!result)
@@ -85,7 +89,7 @@ namespace LMS.Infrastructure
             return user; 
         }
 
-        public async Task EnforceIsAllowed(string action, object relation, Guid? actorId = null)
+        public async Task EnforceIsAllowed(PermissionEnum action, object relation, Guid? actorId = null)
         {
             var actor = actorId.HasValue ? await GetUserById(actorId.Value) : await GetCurrentUser();
 
@@ -107,7 +111,7 @@ namespace LMS.Infrastructure
             }
         }
 
-        public async Task EnforceRelationship(string action, object relation, Guid ownerId, Guid? actorId = null)
+        public async Task EnforceRelationship(PermissionEnum action, object relation, Guid ownerId, Guid? actorId = null)
         {
             var actor = actorId.HasValue ? await GetUserById(actorId.Value) : await GetCurrentUser();
 
@@ -118,7 +122,7 @@ namespace LMS.Infrastructure
             }
         }
 
-        private bool CheckPermission(string permissionAcl, string action, object relation)
+        private bool CheckPermission(string permissionAcl, PermissionEnum action, object relation)
         {
             var parts = permissionAcl.Split(':');
             if (parts.Length != 3)
@@ -136,7 +140,18 @@ namespace LMS.Infrastructure
             // Проверка соответствия разрешений
             return (subjectId == entityId || subjectId == "*")
                 && subjectName == relation.GetType().Name
-                && subjectAction == action;
+                && subjectAction == action.ToString();
+        }
+
+        private bool CheckPermissions(string[] permissionAcls, PermissionEnum action, object relation)
+        {
+            foreach (var permission in permissionAcls)
+            {
+                if (CheckPermission(permission, action, relation)) { 
+                    return true; 
+                }
+            }
+            return false; 
         }
 
         // Метод для получения идентификатора сущности

@@ -30,10 +30,10 @@ namespace LMS.Application.Staff.UseCases
 
             var byUser = await _accessPolicy.GetCurrentUser();
 
-            //if (!await _accessPolicy.CanAccess(Domain.User.Enums.UserRoles.Moderator) && ticket.CreatedBy.Id != byUser.Id)
-            //{
-            //    throw new AccessDenied("ticket is not created by you");
-            //}
+            if (!await _accessPolicy.IsAllowed("extend", ticket) && ticket.CreatedBy.Id != byUser.Id)
+            {
+                throw new AccessDenied("ticket is not created by you");
+            }
             var newFiles = await _fileService.UploadFiles().Execute(dto.Files);
 
             TicketCommentEntity comment;

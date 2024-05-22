@@ -57,14 +57,14 @@ namespace LMS.Application.Staff.UseCases
             }
 
             // Ensure only moderators can assign users
-            //if (await _accessPolicy.CanAccess(UserRoles.Moderator) && dto.AssignUserId != null)
-            //{
-            //    var userToAssign = await _context.Users.FirstOrDefaultAsync(u => u.Id == dto.AssignUserId);
+            if (await _accessPolicy.Role(UserRoles.Admin) && dto.AssignUserId != null)
+            {
+                var userToAssign = await _context.Users.FirstOrDefaultAsync(u => u.Id == dto.AssignUserId);
 
-            //    Guard.Against.Null(userToAssign, message: "User to assign does not exists");
+                Guard.Against.Null(userToAssign, message: "User to assign does not exists");
 
-            //    ticket.Accept(userToAssign);
-            //}
+                ticket.Accept(userToAssign);
+            }
 
             await _context.SaveChangesAsync();
 
