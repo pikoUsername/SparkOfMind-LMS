@@ -31,13 +31,14 @@ namespace LMS.Application.User.UseCases
             }
 
             var newUser = UserEntity.Create(
-                fullname: dto.UserName,
+                fullname: dto.Surname + " " + dto.Name,
                 email: dto.EmailAddress,
                 password: dto.Password,
                 passwordService: passwordService
             );
 
-            await _context.Users.AddAsync(newUser);
+            _context.Users.Add(newUser);
+            newUser.AddPermissionWithCode(nameof(UserEntity), newUser.Id.ToString(), "*"); 
             await _context.SaveChangesAsync();
 
             return newUser;

@@ -9,6 +9,7 @@ using LMS.Infrastructure.Adapters.Mailing;
 using LMS.Infrastructure.Caching;
 using LMS.Infrastructure.EventStore;
 using LMS.Infrastructure.Data.Intercepters;
+using LMS.Application.Study.Interfaces;
 
 namespace LMS.Infrastructure
 {
@@ -57,6 +58,7 @@ namespace LMS.Infrastructure
             services.AddScoped<IEventStore, EventStore.EventStore>();
             services.AddScoped<ApplicationDbContextInitialiser>();
             services.AddScoped<EventStoreContextInitialiser>();
+            services.AddScoped<IInstitutionAccessPolicy, InstitutionAccessPolicy>();
 
             services.AddSingleton(TimeProvider.System);
             //services.AddScoped<IEventSubscriber<BaseEvent>, LoggingHandler<BaseEvent>>(); 

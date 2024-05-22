@@ -5,6 +5,8 @@
         Active,
         Withdrawn,
         Graduated,
-        OnLeave
+        OnLeave,
+        // сделан для потоков, когда родители оплатили курс до начала курса
+        Waiting
     }
 }

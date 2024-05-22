@@ -7,45 +7,6 @@ using System.Text.Json;
 
 namespace LMS.Domain.Study.Entities
 {
-    public class GradeEntity : BaseAuditableEntity
-    {
-        [Required, ForeignKey(nameof(AssignmentEntity))]
-        public Guid AssignmentId { get; set; }
-        [Required]
-        public string Mark { get; set; } = null!;
-        [Required]
-        public DateTime Date { get; set; }
-        [Required]
-        public string Comment { get; set; } = null!;
-        [Required, ForeignKey(nameof(StudentEntity))]
-        public Guid StudentId { get; set; } 
-        public ICollection<FileEntity> Attachments { get; set; } = []; 
-
-        public static GradeEntity Create(
-            AssignmentEntity assigment, 
-            string mark, 
-            string comment, 
-            Guid studentId, 
-            ICollection<FileEntity> attachments)
-        {
-            // throws exception if not valid mark
-            AssigmentService.VerifyMark(mark, assigment.GradeType); 
-            var grade = new GradeEntity()
-            {
-                AssignmentId = assigment.Id,
-                Mark = mark,
-                Comment = comment,
-                StudentId = studentId,
-                Attachments = attachments,
-                Date = DateTime.UtcNow
-            };
-
-            grade.AddDomainEvent(new GradeCreated(grade)); 
-
-            return grade; 
-        }
-    }
-
     public class GradeTypeEntity : BaseAuditableEntity
     {
         public int? Max { get; set; }

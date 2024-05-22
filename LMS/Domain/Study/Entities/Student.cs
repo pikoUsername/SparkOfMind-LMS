@@ -18,15 +18,16 @@ namespace LMS.Domain.Study.Entities
         [Required, ForeignKey(nameof(CourseEntity))]
         public Guid CourseId { get; set; }
         [Required]
-        public bool Completed { get; set; } = false;
+        public bool Completed { get; private set; } = false;
         [Required]
-        public bool Rejected { get; set; } = false; 
+        public bool Rejected { get; private set; } = false; 
+
 
         public static StudentCourseEntity Create(Guid studentId, DateTime admissionDate, Guid purchaseId, Guid courseId)
         {
             var studentCourse = new StudentCourseEntity()
             {
-                StudentId = studentId,
+                StudentId = studentId, 
                 AdmissionDate = admissionDate,
                 PurchaseId = purchaseId,
                 CourseId = courseId,
@@ -43,7 +44,7 @@ namespace LMS.Domain.Study.Entities
     {
         [ForeignKey(nameof(UserEntity)), Required]
         public Guid ParentId { get; set; }
-        public string FullName { get; set; } = null!; 
+        //public string FullName { get; set; } = null!; 
         public string? Phone { get; set; } 
         [Required]
         public StudentStatus Status { get; set; }
@@ -52,7 +53,8 @@ namespace LMS.Domain.Study.Entities
         public DateOnly? BirthDate { get; set; }
         [Required]
         public string? Address { get; set; } = null!;
-        public ICollection<StudentCourseEntity> Courses { get; set; } = []; 
+        public ICollection<StudentCourseEntity> Courses { get; set; } = [];
+        public UserEntity User { get; set; } = null!; 
 
         public static StudentEntity CreateFromUser(UserEntity user, UserEntity parent, Guid institutionId, StudentStatus status)
         {
@@ -65,7 +67,7 @@ namespace LMS.Domain.Study.Entities
                 InstitutionMember = member, 
                 Phone = user.Phone, 
                 Status = status,
-                FullName = user.Fullname, 
+                User = user, 
                 ParentId = parent.Id,
             };
 

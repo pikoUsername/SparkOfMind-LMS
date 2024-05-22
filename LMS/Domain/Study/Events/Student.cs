@@ -1,4 +1,5 @@
-﻿using LMS.Domain.Study.Entities;
+﻿using LMS.Domain.Payment.Entities;
+using LMS.Domain.Study.Entities;
 
 namespace LMS.Domain.Study.Events
 {
