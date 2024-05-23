@@ -36,7 +36,6 @@
 
   <ItemGroup>
     <Folder Include="Application\Study\Exceptions\" />
-    <Folder Include="Application\Study\UseCases\Books\" />
     <Folder Include="Application\Study\UseCases\CourseGroup\" />
     <Folder Include="Application\Study\UseCases\Schedule\" />
   </ItemGroup>

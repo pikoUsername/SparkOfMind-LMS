@@ -8,22 +8,25 @@ namespace LMS.Domain.Study.Entities
     {
         [ForeignKey(nameof(InstitutionEntity)), Required]
         public Guid InstitutionId { get; set; }
-        [ForeignKey(nameof(CourseEntity)), Required]
-        public Guid CourseId { get; set; }
+        [ForeignKey(nameof(CourseEntity))]
+        public Guid? CourseId { get; set; }
         [Required]
         public string Name { get; set; } = null!;
+        [Required]
+        public string Author { get; set; } = null!; 
         [Required]
         public string Description { get; set; } = null!;
         public bool IsOnline { get; set; } = false; 
         public string? Link { get; set; } = null!;
         
-        public static BookEntity Create(Guid institutionId, Guid courseId, string name, string description)
+        public static BookEntity Create(Guid institutionId, string name, string description, string author, Guid? courseId)
         {
             var book = new BookEntity()
             {
                 InstitutionId = institutionId,
                 CourseId = courseId,
                 Name = name,
+                Author = author, 
                 Description = description
             };
 
@@ -32,7 +35,7 @@ namespace LMS.Domain.Study.Entities
             return book; 
         }    
 
-        public static BookEntity CreateOnline(Guid institutionId, Guid courseId, string name, string description, string link)
+        public static BookEntity CreateOnline(Guid institutionId, string name, string description, string link, Guid? courseId)
         {
             var book = new BookEntity()
             {

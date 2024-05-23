@@ -9,9 +9,11 @@ namespace LMS.Infrastructure
     public class InstitutionAccessPolicy : IInstitutionAccessPolicy
     {
         private IApplicationDbContext _context;
+        private IUser currentUser { get; }
 
-        public InstitutionAccessPolicy(IApplicationDbContext dbContext) {
+        public InstitutionAccessPolicy(IApplicationDbContext dbContext, IUser user) {
             _context = dbContext;
+            currentUser = user;
         }
 
         public async Task EnforceRole(InstitutionRolesEntity role, InstitutionMemberEntity member)
@@ -30,6 +32,16 @@ namespace LMS.Infrastructure
         {
 
         }
+
+        public async Task EnforceMembership(Guid institutionId)
+        {
+            await GetMemberByCurrentUser(institutionId); 
+        }
+        public async Task EnforceMembership(Guid userId, Guid institutionId)
+        {
+            await GetMember(userId, institutionId); 
+        }
+
         public async Task<InstitutionMemberEntity> GetMember(Guid userId, Guid institutionId)
         {
             var member = await _context.InstitutionMembers
@@ -40,6 +52,13 @@ namespace LMS.Infrastructure
             Guard.Against.Null(member);
 
             return member; 
+        }
+
+        public async Task<InstitutionMemberEntity> GetMemberByCurrentUser(Guid institutionId)
+        {
+            Guard.Against.Null(currentUser.Id); 
+
+            return await GetMember((Guid)currentUser.Id, institutionId);
         }
     }
 }

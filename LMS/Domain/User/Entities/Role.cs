@@ -1,5 +1,4 @@
 ﻿using LMS.Domain.User.Enums;
-using LMS.Domain.User.Events;
 using LMS.Domain.User.Interfaces;
 
 namespace LMS.Domain.User.Entities
