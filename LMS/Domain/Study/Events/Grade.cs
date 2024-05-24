@@ -2,7 +2,7 @@
 
 namespace LMS.Domain.Study.Events
 {
-    public class GradeCreated(SubmissionEntity grade) : DomainEvent 
+    public class SubmissionCreated(SubmissionEntity grade) : DomainEvent 
     {
         public SubmissionEntity Grade { get; set; } = grade; 
     }

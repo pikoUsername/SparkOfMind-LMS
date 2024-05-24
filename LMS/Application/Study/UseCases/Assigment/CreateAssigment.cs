@@ -1,8 +1,8 @@
-﻿using KarmaMarketplace.Application.Common.Interactors;
+﻿using LMS.Application.Common.UseCases;
 
 namespace LMS.Application.Study.UseCases.Assigment
 {
-    public class CreateAssigment : BaseUseCase<InputDTO, OutputDTO>
+    public class CreateAssigment : BaseUseCase<CreateAssignmentDto, OutputDTO>
     {
         public CreateAssigment() { }
 

@@ -10,38 +10,47 @@ namespace LMS.Domain.Study.Entities
     {
         [Required, ForeignKey(nameof(AssignmentEntity))]
         public Guid AssignmentId { get; set; }
-        [Required]
-        public string Mark { get; set; } = null!;
+        public string? Mark { get; set; } = null!;
         [Required]
         public DateTime Date { get; set; }
-        [Required]
-        public string Comment { get; set; } = null!;
+        public string? TeacherComment { get; set; } = null!;
+        public string? Comment { get; set; } = null!; 
         [Required, ForeignKey(nameof(StudentEntity))]
         public Guid StudentId { get; set; }
         public ICollection<FileEntity> Attachments { get; set; } = [];
+        public bool AllowedToEditByStudent { get; set; } = false; 
 
         public static SubmissionEntity Create(
-            AssignmentEntity assigment,
-            string mark,
-            string comment,
+            AssignmentEntity assignment,
+            string? comment,
             Guid studentId,
             ICollection<FileEntity> attachments)
         {
             // throws exception if not valid mark
-            AssigmentService.VerifyMark(mark, assigment.GradeType);
-            var grade = new SubmissionEntity()
+
+            var submission = new SubmissionEntity()
             {
-                AssignmentId = assigment.Id,
-                Mark = mark,
+                AssignmentId = assignment.Id,
                 Comment = comment,
                 StudentId = studentId,
                 Attachments = attachments,
                 Date = DateTime.UtcNow
             };
 
-            grade.AddDomainEvent(new GradeCreated(grade));
+            submission.AddDomainEvent(new SubmissionCreated(submission));
 
-            return grade;
+            return submission;
         }
+
+        public void MarkSubmission(string mark, AssignmentEntity assignment)
+        {
+            AssigmentService.VerifyMark(mark, assignment.GradeType);
+
+            Mark = mark; 
+
+            AddDomainEvent(new SubmissionMarked(this));     
+        }
+
+        
     }
 }
