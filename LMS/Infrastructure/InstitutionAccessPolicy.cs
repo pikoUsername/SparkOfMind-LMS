@@ -28,7 +28,7 @@ namespace LMS.Infrastructure
         {
 
         }
-        public async Task EnforcePermission(PermissionEnum action, string subjectName, InstitutionMemberEntity member)
+        public async Task EnforcePermission(PermissionEnum action, Type subject, InstitutionMemberEntity member, Guid? subjectId = null)
         {
 
         }

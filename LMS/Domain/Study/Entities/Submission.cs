@@ -8,8 +8,8 @@ namespace LMS.Domain.Study.Entities
 {
     public class SubmissionEntity : BaseAuditableEntity
     {
-        [Required, ForeignKey(nameof(AssignmentEntity))]
-        public Guid AssignmentId { get; set; }
+        [Required]
+        public AssignmentEntity Assignment { get; set; } = null!; 
         public string? Mark { get; set; } = null!;
         [Required]
         public DateTime Date { get; set; }
@@ -30,7 +30,7 @@ namespace LMS.Domain.Study.Entities
 
             var submission = new SubmissionEntity()
             {
-                AssignmentId = assignment.Id,
+                Assignment = assignment,
                 Comment = comment,
                 StudentId = studentId,
                 Attachments = attachments,
@@ -44,7 +44,7 @@ namespace LMS.Domain.Study.Entities
 
         public void MarkSubmission(string mark, AssignmentEntity assignment)
         {
-            AssigmentService.VerifyMark(mark, assignment.GradeType);
+            AssignmentService.VerifyMark(mark, assignment.GradeType);
 
             Mark = mark; 
 

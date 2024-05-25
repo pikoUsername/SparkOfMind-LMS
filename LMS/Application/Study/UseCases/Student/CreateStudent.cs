@@ -50,7 +50,7 @@ namespace LMS.Application.Study.UseCases.Student
             var currentUser = await _accessPolicy.GetCurrentUser();
 
             var member = await _insitutionPolicy.GetMember(currentUser.Id, institution.Id); 
-            await _insitutionPolicy.EnforcePermission(PermissionEnum.extend, "Students", member); 
+            await _insitutionPolicy.EnforcePermission(PermissionEnum.extend, typeof(StudentEntity), member); 
 
             var student = await _context.Students.FirstOrDefaultAsync(
                 x => x.Phone == dto.Phone && x.InstitutionMember.InstitutionId == dto.InstitutionId);

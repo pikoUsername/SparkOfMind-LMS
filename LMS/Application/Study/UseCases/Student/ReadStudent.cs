@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Application.Study.UseCases.Student
 {
-    public class GetStudent : BaseUseCase<GetStudentDto, StudentEntity>
+    public class GetStudent : BaseUseCase<GetStudentDto, StudentEntity?>
     {
         private IApplicationDbContext _context; 
 
@@ -14,7 +14,7 @@ namespace LMS.Application.Study.UseCases.Student
             _context = dbContext;
         }
 
-        public async Task<StudentEntity> Execute(GetStudentDto dto)
+        public async Task<StudentEntity?> Execute(GetStudentDto dto)
         {
             var query = _context.Students
                 .Include(x => x.Courses)
@@ -30,7 +30,6 @@ namespace LMS.Application.Study.UseCases.Student
                 query = query.Where(x => x.Phone == dto.Phone);     
 
             var result = await query.FirstOrDefaultAsync();
-            Guard.Against.Null(result, message: "Student not found");  // ??????
 
             return result;
         }

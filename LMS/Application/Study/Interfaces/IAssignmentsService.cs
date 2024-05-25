@@ -1,6 +1,6 @@
 ﻿namespace LMS.Application.Study.Interfaces
 {
-    public interface IAssigmentsService
+    public interface IAssignmentsService
     {
     }
 }

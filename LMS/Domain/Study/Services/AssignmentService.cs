@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace LMS.Domain.Study.Services
 {
-    public static class AssigmentService 
+    public static class AssignmentService 
     {
         public static void VerifyMark(string mark, GradeTypeEntity gradeType)
         {

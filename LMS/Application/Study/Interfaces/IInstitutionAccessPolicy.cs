@@ -8,7 +8,8 @@ namespace LMS.Application.Study.Interfaces
         Task EnforceRole(InstitutionRolesEntity role, InstitutionMemberEntity member);
         Task EnforceRole(string roleName, InstitutionMemberEntity member);
         Task EnforcePermission(string permissionAcl, InstitutionMemberEntity member);
-        Task EnforcePermission(PermissionEnum action, string subjectName, InstitutionMemberEntity member);
+        // usage: await EnforcePermission(PermissionEnum.all, typeof(StudentEntity), member, [student.Id]);
+        Task EnforcePermission(PermissionEnum action, Type subject, InstitutionMemberEntity member, Guid? subjectId = null);
         Task EnforceMembership(Guid institutionId);
         Task EnforceMembership(Guid userId, Guid institutionId); 
         Task<InstitutionMemberEntity> GetMember(Guid userId, Guid institutionId);

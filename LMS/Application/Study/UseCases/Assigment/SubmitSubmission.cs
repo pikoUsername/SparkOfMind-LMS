@@ -3,17 +3,19 @@ using LMS.Application.Common.UseCases;
 using LMS.Application.Files.Interfaces;
 using LMS.Application.Study.Dto;
 using LMS.Application.Study.Interfaces;
+using LMS.Domain.Files.Entities;
 using LMS.Domain.Study.Entities;
+using LMS.Domain.User.Entities;
+using LMS.Domain.User.Enums;
+using LMS.Infrastructure.Data.Queries;
 using Microsoft.EntityFrameworkCore;
-using SQLitePCL;
 
 namespace LMS.Application.Study.UseCases.Assigment
 {
-    public class CompleteAssignment : BaseUseCase<CompleteAssigmentDto, AssignmentEntity>
+    public class CompleteAssignment : BaseUseCase<CompleteAssignmentDto, SubmissionEntity>
     {
         private IApplicationDbContext _context { get; }
         private IInstitutionAccessPolicy _institutionPolicy { get; }
-        private IAccessPolicy _accessPolicy { get; }
         private IFileService _fileService { get; }
 
         public CompleteAssignment(
@@ -28,12 +30,14 @@ namespace LMS.Application.Study.UseCases.Assigment
             _accessPolicy = accessPolicy;
         }
 
-        public async Task<AssignmentEntity> Execute(CompleteAssigmentDto dto)
+        public async Task<SubmissionEntity> Execute(CompleteAssignmentDto dto)
         {
             var member = await _institutionPolicy.GetMemberByCurrentUser(dto.InstitutionId);
 
             var assigment = await _context.Assigments.FirstOrDefaultAsync(x => x.Id == dto.AssignmentId); 
-            var student = await _context.Students.FirstOrDefaultAsync(x => x.InstitutionMember.Id == member.Id);
+            var student = await _context.Students
+                .IncludeStandard()
+                .FirstOrDefaultAsync(x => x.InstitutionMember.Id == member.Id);
 
             Guard.Against.Null(assigment, message: "Assigment does not exists"); 
             Guard.Against.Null(student, message: "You are not a student");
@@ -41,15 +45,23 @@ namespace LMS.Application.Study.UseCases.Assigment
             var group = await _context.CourseGroups.FirstOrDefaultAsync(
                 x => x.InstitutionId == dto.AssignmentId && 
                      x.Students.Any(x => x.Id == student.Id));
-            Guard.Against.Null(group, message: "Group not found, CRITICAL"); 
+            Guard.Against.Null(group, message: "Group not found, CRITICAL");
 
+            ICollection<FileEntity> files = []; 
             if (dto.Files != null)
             {
-                var files = await _fileService.UploadFiles().Execute(dto.Files); 
+                files = await _fileService.UploadFiles().Execute(dto.Files); 
             }
-            var submission = SubmissionEntity.Create(assigment, dto.Text); 
+            var submission = SubmissionEntity.Create(assigment, dto.Text, student.Id, files);
 
-            return;
+            student.User.AddPermissionWithCode(
+                submission, 
+                PermissionEnum.read);
+            _context.Students.Update(student); 
+            _context.Submissions.Add(submission);
+            await _context.SaveChangesAsync(); 
+
+            return submission;
         }
     }
 }

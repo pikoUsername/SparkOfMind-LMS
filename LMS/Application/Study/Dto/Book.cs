@@ -32,6 +32,13 @@ namespace LMS.Application.Study.Dto
         public Guid InstitutionId { get; set; }
         public Guid? CourseId { get; set; }
         public string? Name { get; set; }
-        public bool?  IsOnline { get; set; }
+        public bool? IsOnline { get; set; }
+    }
+
+    public class DeleteBookDto {
+        [Required]
+        public Guid BookId { get; set; }
+        [Required]
+        public Guid InstitutionId { get; set; }
     }
 }

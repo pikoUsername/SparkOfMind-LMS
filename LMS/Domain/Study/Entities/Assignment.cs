@@ -23,7 +23,6 @@ namespace LMS.Domain.Study.Entities
         [Required]
         public Guid CourseId { get; set; }
         [Required]
-        // only teachers can assign tasks
         public TeacherEntity AssignedBy { get; set; } = null!; 
         [Required]
         public Guid AssignedGroupId { get; set; }

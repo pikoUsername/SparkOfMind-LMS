@@ -13,14 +13,11 @@ namespace LMS.Application.Study.UseCases.Books
         private IApplicationDbContext _context { get; }
         private IInstitutionAccessPolicy _institutionPolicy { get; }
         private IAccessPolicy _accessPolicy { get; }
-        private IUser _user { get; }
 
         public CreateBook(
             IApplicationDbContext dbContext, 
             IInstitutionAccessPolicy institutionPolicy, 
-            IAccessPolicy accessPolicy, 
-            IUser user) {
-            _user = user; 
+            IAccessPolicy accessPolicy) {
             _context = dbContext;
             _institutionPolicy = institutionPolicy;
             _accessPolicy = accessPolicy; 
@@ -33,7 +30,7 @@ namespace LMS.Application.Study.UseCases.Books
             // only insitution member can post books for their students
             // and institution member does not have exclusive rights to delete, edit, or etc. 
             var member = await _institutionPolicy.GetMember(user.Id, dto.InstitutionId); 
-            await _institutionPolicy.EnforcePermission(Domain.User.Enums.PermissionEnum.write, nameof(BookEntity), member);
+            await _institutionPolicy.EnforcePermission(Domain.User.Enums.PermissionEnum.write, typeof(BookEntity), member);
 
             BookEntity book; 
             if (dto.IsOnline)

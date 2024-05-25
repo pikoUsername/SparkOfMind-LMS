@@ -1,10 +1,10 @@
 ﻿using LMS.Application.Common.UseCases;
 
-namespace LMS.Application.Study.UseCases.Assigment
+namespace LMS.Application.Study.UseCases.CourseGroup
 {
-    public class CreateSubmission : BaseUseCase<InputDTO, OutputDTO>
+    public class ExtendGroup : BaseUseCase<ExtendGroupDto, OutputDTO>
     {
-        public CreateSubmission() { }
+        public ExtendGroup() { }
 
         public async Task<OutputDTO> Execute(InputDTO dto)
         {

@@ -1,12 +1,13 @@
-﻿using KarmaMarketplace.Application.Common.Interactors;
+﻿using LMS.Application.Common.UseCases;
+using LMS.Domain.Study.Entities;
 
 namespace LMS.Application.Study.UseCases.Institution
 {
-    public class CreateIstitution : BaseUseCase<InputDTO, OutputDTO>
+    public class CreateInstitution : BaseUseCase<CreateInstitutionDto, InstitutionEntity>
     {
-        public CreateIstitution() { }
+        public CreateInstitution() { }
 
-        public async Task<OutputDTO> Execute(InputDTO dto)
+        public async Task<InstitutionEntity> Execute(CreateInstitutionDto dto)
         {
             return;
         }

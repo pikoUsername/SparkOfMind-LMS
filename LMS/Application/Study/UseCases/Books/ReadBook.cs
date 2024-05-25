@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Application.Study.UseCases.Books
 {
-    public class GetBook : BaseUseCase<GetBookDto, BookEntity>
+    public class GetBook : BaseUseCase<GetBookDto, BookEntity?>
     {
         private IApplicationDbContext _context;
         private IInstitutionAccessPolicy _institutionPolicy; 
@@ -19,7 +19,7 @@ namespace LMS.Application.Study.UseCases.Books
             _institutionPolicy = institutionPolicy; 
         }
 
-        public async Task<BookEntity> Execute(GetBookDto dto)
+        public async Task<BookEntity?> Execute(GetBookDto dto)
         {
             // deez nuts
             await _institutionPolicy.EnforceMembership(dto.InstitutionId); 
@@ -27,8 +27,6 @@ namespace LMS.Application.Study.UseCases.Books
             var book = await _context.Books
                 .IncludeStandard()
                 .FirstOrDefaultAsync(x => x.Id == dto.BookId || dto.Link == x.Link);
-
-            Guard.Against.Null(book, message: "Book does not exits"); 
 
             return book;
         }
