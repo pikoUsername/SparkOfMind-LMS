@@ -4,7 +4,6 @@ using LMS.Application.Study.Dto;
 using LMS.Application.Study.Interfaces;
 using LMS.Domain.Study.Entities;
 using LMS.Domain.User.Enums;
-using LMS.Infrastructure.Data.Queries;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Application.Study.UseCases.Books

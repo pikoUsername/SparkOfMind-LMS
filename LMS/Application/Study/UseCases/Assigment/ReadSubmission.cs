@@ -42,11 +42,9 @@ namespace LMS.Application.Study.UseCases.Assigment
     {
         private IApplicationDbContext _context;
         private IInstitutionAccessPolicy _institutionPolicy;
-        private IAccessPolicy _accessPolicy; 
 
-        public GetSubmission(IApplicationDbContext dbContext, IInstitutionAccessPolicy institutionPolicy, IAccessPolicy accessPolicy)
+        public GetSubmission(IApplicationDbContext dbContext, IInstitutionAccessPolicy institutionPolicy)
         {
-            _accessPolicy = accessPolicy; 
             _context = dbContext;
             _institutionPolicy = institutionPolicy;
         }
