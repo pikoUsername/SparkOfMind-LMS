@@ -35,7 +35,7 @@ namespace LMS.Application.Staff.UseCases
 
             await _context.Tickets.AddAsync(ticket);
 
-            byUser.AddPermissionWithCode(
+            byUser.Permissions.AddPermissionWithCode(
                 ticket, PermissionEnum.write, PermissionEnum.edit, PermissionEnum.read); 
             await _context.SaveChangesAsync();
 

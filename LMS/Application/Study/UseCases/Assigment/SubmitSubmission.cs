@@ -5,7 +5,6 @@ using LMS.Application.Study.Dto;
 using LMS.Application.Study.Interfaces;
 using LMS.Domain.Files.Entities;
 using LMS.Domain.Study.Entities;
-using LMS.Domain.User.Entities;
 using LMS.Domain.User.Enums;
 using LMS.Infrastructure.Data.Queries;
 using Microsoft.EntityFrameworkCore;
@@ -21,13 +20,11 @@ namespace LMS.Application.Study.UseCases.Assigment
         public CompleteAssignment(
             IApplicationDbContext dbContext,
             IInstitutionAccessPolicy institutionPolicy,
-            IAccessPolicy accessPolicy,
             IFileService fileService)
         {
             _fileService = fileService; 
             _context = dbContext;
             _institutionPolicy = institutionPolicy;
-            _accessPolicy = accessPolicy;
         }
 
         public async Task<SubmissionEntity> Execute(CompleteAssignmentDto dto)
@@ -54,10 +51,9 @@ namespace LMS.Application.Study.UseCases.Assigment
             }
             var submission = SubmissionEntity.Create(assigment, dto.Text, student.Id, files);
 
-            student.User.AddPermissionWithCode(
+            student.User.Permissions.AddPermissionWithCode(
                 submission, 
                 PermissionEnum.read);
-            _context.Students.Update(student); 
             _context.Submissions.Add(submission);
             await _context.SaveChangesAsync(); 
 

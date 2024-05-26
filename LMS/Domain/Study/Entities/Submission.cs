@@ -9,14 +9,14 @@ namespace LMS.Domain.Study.Entities
     public class SubmissionEntity : BaseAuditableEntity
     {
         [Required]
-        public AssignmentEntity Assignment { get; set; } = null!; 
+        public AssignmentEntity Assignment { get; } = null!; 
         public string? Mark { get; set; } = null!;
         [Required]
         public DateTime Date { get; set; }
         public string? TeacherComment { get; set; } = null!;
         public string? Comment { get; set; } = null!; 
         [Required, ForeignKey(nameof(StudentEntity))]
-        public Guid StudentId { get; set; }
+        public Guid StudentId { get; }
         public ICollection<FileEntity> Attachments { get; set; } = [];
         public bool AllowedToEditByStudent { get; set; } = false; 
 

@@ -23,4 +23,10 @@ namespace LMS.Application.Study.Dto
         [Required]
         public string? Comment { get; set; }
     }
+
+    public class OpenSubmissionDto : InputInstitution
+    {
+        [Required]
+        public Guid SubmissionId { get; set; }
+    }
 }

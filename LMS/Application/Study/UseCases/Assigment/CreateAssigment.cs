@@ -61,11 +61,11 @@ namespace LMS.Application.Study.UseCases.Assigment
             }
             foreach (var student in group.Students)
             {
-                student.User.AddPermissionWithCode(assignment, PermissionEnum.read);
+                student.User.Permissions.AddPermissionWithCode(assignment, PermissionEnum.read);
                 _context.Users.Update(student.User); 
             }
 
-            teacher.User.AddPermissionWithCode(assignment, PermissionEnum.all); 
+            teacher.User.Permissions.AddPermissionWithCode(assignment, PermissionEnum.all); 
 
             _context.Assigments.Add(assignment);
             _context.Users.Update(teacher.User); 

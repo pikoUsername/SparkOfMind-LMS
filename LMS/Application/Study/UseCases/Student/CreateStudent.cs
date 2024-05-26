@@ -47,6 +47,7 @@ namespace LMS.Application.Study.UseCases.Student
                 throw new PurchaseIsNotConfirmed(purchase); 
             }
 
+            // verify permission 
             var currentUser = await _accessPolicy.GetCurrentUser();
 
             var member = await _insitutionPolicy.GetMember(currentUser.Id, institution.Id); 

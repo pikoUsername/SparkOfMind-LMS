@@ -2,6 +2,7 @@
 using LMS.Domain.User.Enums;
 using LMS.Domain.User.Events;
 using LMS.Domain.User.Interfaces;
+using LMS.Domain.User.ValueObjects;
 using LMS.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
@@ -55,7 +56,7 @@ namespace LMS.Domain.User.Entities
         [JsonIgnore]
         public ICollection<WarningEntity> Warnings { get; set; } = [];
         public bool IsSuperadmin { get; set; } = false;
-        public ICollection<PermissionEntity> Permissions { get; set; } = [];
+        public PermissionCollection Permissions { get; set; } = [];
         public ICollection<GroupEntity> Groups { get; set; } = [];
         [Phone]
         public string? Phone { get; set; } 
@@ -162,22 +163,6 @@ namespace LMS.Domain.User.Entities
                     fieldName: "Role"
                 )
              );
-        }
-
-        // Repeating code! 
-        public void AddPermission(PermissionEntity permission)
-        {
-            Permissions.Add(permission);
-
-            AddDomainEvent(new PermissionAdded("USER", permission)); 
-        }
-
-        public void AddPermissionWithCode(BaseEntity subject, params PermissionEnum[] actions)
-        {
-            foreach (var action in actions)
-            {
-                AddPermission(PermissionEntity.Create(subject.GetType().Name, subject.Id, action)); 
-            }
         }
 
         public void AddGroup(GroupEntity group)

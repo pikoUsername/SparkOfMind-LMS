@@ -38,7 +38,7 @@ namespace LMS.Application.User.UseCases
             );
 
             _context.Users.Add(newUser);
-            newUser.AddPermissionWithCode(nameof(UserEntity), newUser.Id.ToString(), "*"); 
+            newUser.Permissions.AddPermissionWithCode(newUser, PermissionEnum.all); 
             await _context.SaveChangesAsync();
 
             return newUser;

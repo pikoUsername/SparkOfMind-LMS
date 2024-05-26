@@ -22,10 +22,13 @@ namespace LMS.Application.Study.UseCases.Assigment
 
         public async Task<bool> Execute(DeleteAssignmentDto dto)
         {
+            // permission verfication 
             var member = await _institutionPolicy.GetMemberByCurrentUser(dto.InstitutionId);
             await _institutionPolicy.EnforcePermission(
                 Domain.User.Enums.PermissionEnum.delete, typeof(AssignmentEntity), member, dto.AssignmentId);
-            var assignment = await _context.Assigments.FirstOrDefaultAsync(x => x.Id == dto.AssignmentId);
+
+            var assignment = await _context.Assigments
+                .FirstOrDefaultAsync(x => x.Id == dto.AssignmentId && x.InstitutionId == dto.InstitutionId);
             
             Guard.Against.Null(assignment, message: "Assignment not found"); 
 

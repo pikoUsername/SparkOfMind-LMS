@@ -12,11 +12,11 @@ namespace LMS.Domain.Study.Entities
         public Guid InstitutionId { get; set; }
         [Required]
         public List<StudentEntity> Students { get; private set; } = [];
-        public GradeTypeEntity? GradeType { get; set; } 
+        public GradeTypeEntity GradeType { get; set; } 
         // groups could be mixed! 
         public Guid? CourseId { get; set; }
 
-        public static CourseGroupEntity Create(string name, Guid institutionId, GradeTypeEntity? gradeType = null)
+        public static CourseGroupEntity Create(string name, Guid institutionId, GradeTypeEntity gradeType)
         {
             var courseGroup = new CourseGroupEntity() {
                 Name = name,

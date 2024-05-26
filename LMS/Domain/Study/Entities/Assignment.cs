@@ -26,6 +26,8 @@ namespace LMS.Domain.Study.Entities
         public TeacherEntity AssignedBy { get; set; } = null!; 
         [Required]
         public Guid AssignedGroupId { get; set; }
+        [Required]
+        public Guid InstitutionId { get; set; }
 
         public static AssignmentEntity Create(
             string name, 
@@ -47,6 +49,7 @@ namespace LMS.Domain.Study.Entities
                 AssignedBy = assginedBy,
                 AssignedGroupId = courseGroup.Id,
                 GradeType = courseGroup.GradeType, 
+                InstitutionId = assginedBy.InstitutionId, 
                 Examination = examination
             };
             assignment.AddDomainEvent(new AssignmentCreated(assignment));

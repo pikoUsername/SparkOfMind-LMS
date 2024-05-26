@@ -9,7 +9,8 @@ namespace LMS.Infrastructure.Data.Queries
         {
             return query
                 .Include(x => x.Attachments)
-                .Include(x => x.AssignedBy);
+                .Include(x => x.AssignedBy)
+                .Include(x => x.GradeType);
         }
     }
 }

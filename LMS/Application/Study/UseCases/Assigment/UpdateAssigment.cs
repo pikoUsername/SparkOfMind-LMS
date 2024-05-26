@@ -4,6 +4,7 @@ using LMS.Application.Files.Interfaces;
 using LMS.Application.Study.Dto;
 using LMS.Application.Study.Interfaces;
 using LMS.Domain.Study.Entities;
+using LMS.Infrastructure.Data.Queries;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Application.Study.UseCases.Assigment
@@ -26,14 +27,17 @@ namespace LMS.Application.Study.UseCases.Assigment
 
         public async Task<AssignmentEntity> Execute(UpdateAssignmentDto dto)
         {
-            var member = await _institutionPolicy.GetMemberByCurrentUser(dto.InstitutionId); 
+            var member = await _institutionPolicy.GetMemberByCurrentUser(dto.InstitutionId);
 
-            var assignment = await _context.Assigments.FirstOrDefaultAsync(x => x.Id == dto.AssignmentId);
+            await _institutionPolicy.EnforcePermission(
+                Domain.User.Enums.PermissionEnum.edit, typeof(AssignmentEntity), member, dto.AssignmentId);
+
+            var assignment = await _context.Assigments
+                .IncludeStandard()
+                .FirstOrDefaultAsync(x => x.Id == dto.AssignmentId && x.InstitutionId == dto.InstitutionId);
 
             Guard.Against.Null(assignment, message: "Assignment not found"); 
 
-            await _institutionPolicy.EnforcePermission(
-                Domain.User.Enums.PermissionEnum.edit, typeof(AssignmentEntity), member, assignment.Id);
 
             if (dto.StartDate != null)
             {
@@ -61,7 +65,6 @@ namespace LMS.Application.Study.UseCases.Assigment
                 assignment.Description = dto.Description; 
             }
 
-            _context.Assigments.Update(assignment);
             await _context.SaveChangesAsync();
 
             return assignment;

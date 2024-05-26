@@ -1,4 +1,5 @@
 ﻿using LMS.Domain.User.Events;
+using LMS.Domain.User.ValueObjects;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -7,26 +8,31 @@ namespace LMS.Domain.User.Entities
     public class GroupEntity : BaseAuditableEntity
     {
         [Required]
-        public ICollection<PermissionEntity> Permissions { get; set; } = [];
+        public PermissionCollection Permissions { get; set; } = [];
         [Required]
         public string Name { get; set; } = null!;
         [JsonIgnore]
         public ICollection<UserEntity> Users { get; set; } = [];
 
-        // Repeating code! 
-        public void AddPermission(PermissionEntity permission)
+        public static GroupEntity Create(string name)
         {
-            Permissions.Add(permission);
+            var group = new GroupEntity()
+            {
+                Name = name,
+                Users = [],
+                Permissions = [],
+            };
 
-            AddDomainEvent(new PermissionAdded("GROUP", permission));
+            group.AddDomainEvent(new GroupCreated(group));
+
+            return group; 
         }
 
-        public void AddPermissionWithCode(string subjectName, string subjectId, params string[] actions)
+        public void AddUser(UserEntity user)
         {
-            foreach (var action in actions)
-            {
-                AddPermission(PermissionEntity.Create(subjectName, subjectId, action));
-            }
+            Users.Add(user);
+
+            AddDomainEvent(new GroupUserAdded(this, user)); 
         }
     }
 }
