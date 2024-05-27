@@ -23,7 +23,7 @@ namespace LMS.Domain.Study.Entities
         {
             var teacher = new TeacherEntity() {
                 InstitutionMember = InstitutionMemberEntity.Create(user.Id, institutionId), 
-                Teacher = user, 
+                User = user, 
                 InstitutionId = institutionId,
                 Status = status
             };

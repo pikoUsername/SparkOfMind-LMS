@@ -38,7 +38,7 @@ namespace LMS.Application.User.UseCases
             }
             else if (dto.UserId != null)
             {
-                await _accessPolicy.EnforceIsAllowed("read", _context.Users.EntityType); 
+                await _accessPolicy.EnforceIsAllowed(PermissionEnum.write, _context.Notifications.EntityType); 
 
                 users = await _context.Users.AsNoTracking().Where(x => x.Id == dto.UserId).ToListAsync();
             }

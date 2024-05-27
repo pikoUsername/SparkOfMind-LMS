@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using LMS.Application.Files.Dto;
+using System.ComponentModel.DataAnnotations;
 
 namespace LMS.Application.Study.Dto
 {
@@ -24,9 +25,18 @@ namespace LMS.Application.Study.Dto
         public Guid GroupId; 
     }
 
-    public class UpdateGroupDto : InputInstitution { }
+    public class UpdateGroupDto : InputInstitution {
+        public string? Name;
+        public Guid? GradeTypeId;
+        public Guid GroupId; 
+
+    }
     public class SendGroupNotificationDto : InputInstitution
     {
+        public Guid GroupId;
+        public string Text = null!;
+        public string Title = null!; 
+        
     }
 
     public class GetGroupsListDto : InputInstitution
