@@ -2,6 +2,7 @@
 using LMS.Domain.User.Entities;
 using LMS.Domain.User.Enums;
 using LMS.Domain.User.Interfaces;
+using LMS.Domain.User.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Infrastructure
@@ -26,7 +27,7 @@ namespace LMS.Infrastructure
                 return Task.FromResult(true);
             foreach (var permissionAcl in actor.GetPermissions())
             {
-                if (CheckPermissions(permissionAcl.Join(), action, relation))
+                if (PermissionService.CheckPermissions(permissionAcl.Join(), action, relation))
                 {
                     return Task.FromResult(true);
                 }
@@ -62,14 +63,12 @@ namespace LMS.Infrastructure
 
         public async Task<UserEntity> GetCurrentUser()
         {
+            if (_currentUser.Id == null)
+                throw new AccessDenied("Unauthorized"); 
             if (_cachedCurrentUser == null)
             {
-                // Retrieve current user from the database
-                _cachedCurrentUser = await _context.Users
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.Id == _currentUser.Id);
+                _cachedCurrentUser = await GetUserById((Guid)_currentUser.Id); 
 
-                // If current user is not found or blocked, throw AccessDenied exception
                 if (_cachedCurrentUser == null || _cachedCurrentUser.Blocked)
                 {
                     throw new AccessDenied("User is not authorized");
@@ -80,8 +79,12 @@ namespace LMS.Infrastructure
 
         private async Task<UserEntity> GetUserById(Guid userId)
         {
+            // performance eater!!! 
             var user = await _context.Users
-                .AsNoTracking()
+                .Include(x => x.Roles)
+                .Include(x => x.Groups)
+                    .ThenInclude(x => x.Permissions)
+                .Include(x => x.Permissions)
                 .FirstOrDefaultAsync(x => x.Id == userId);
 
             Guard.Against.Null(user, message: "Actor does not exists");
@@ -120,59 +123,6 @@ namespace LMS.Infrastructure
             {
                 throw new AccessDenied($"User is not allowed to perform action '{action}' on relation '{relation}' with ownerId '{ownerId}'");
             }
-        }
-
-        private bool CheckPermission(string permissionAcl, PermissionEnum action, object relation)
-        {
-            var parts = permissionAcl.Split(':');
-            if (parts.Length != 3)
-            {
-                throw new Exception($"Permissions acl of the user has been compromised, parts: {parts}, acl: {permissionAcl}");
-            }
-
-            var subjectName = parts[0];
-            var subjectId = parts[1];
-            var subjectAction = parts[2];
-
-            // Проверка на null и получение идентификатора сущности
-            string entityId = GetEntityId(relation);
-
-            // Проверка соответствия разрешений
-            return (subjectId == entityId || subjectId == "*")
-                && subjectName == relation.GetType().Name
-                && subjectAction == action.ToString();
-        }
-
-        private bool CheckPermissions(string[] permissionAcls, PermissionEnum action, object relation)
-        {
-            foreach (var permission in permissionAcls)
-            {
-                if (CheckPermission(permission, action, relation)) { 
-                    return true; 
-                }
-            }
-            return false; 
-        }
-
-        // Метод для получения идентификатора сущности
-        private string GetEntityId(object relation)
-        {
-            if (relation == null)
-            {
-                throw new ArgumentNullException(nameof(relation), "Relation object cannot be null.");
-            }
-
-            if (relation is string stringRelation)
-            {
-                return stringRelation;
-            }
-
-            if (relation is BaseEntity entity)
-            {
-                return entity.Id.ToString();
-            }
-
-            throw new ArgumentException($"{nameof(relation)} entity is not convertible to BaseEntity", nameof(relation));
         }
     }
 }
