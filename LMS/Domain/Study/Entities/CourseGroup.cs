@@ -16,13 +16,14 @@ namespace LMS.Domain.Study.Entities
         // groups could be mixed! 
         public Guid? CourseId { get; set; }
 
-        public static CourseGroupEntity Create(string name, Guid institutionId, GradeTypeEntity gradeType)
+        public static CourseGroupEntity Create(string name, Guid institutionId, GradeTypeEntity gradeType, Guid? courseId = null)
         {
             var courseGroup = new CourseGroupEntity() {
                 Name = name,
                 InstitutionId = institutionId,
                 Students = [],
-                GradeType = gradeType
+                GradeType = gradeType, 
+                CourseId = courseId, 
             };
 
             courseGroup.AddDomainEvent(new CourseGroupCreated(courseGroup));

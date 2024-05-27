@@ -1,21 +1,24 @@
 ﻿using LMS.Application.Common.Interfaces;
 using LMS.Application.Common.UseCases;
+using LMS.Application.Files.Interfaces;
 using LMS.Application.Study.Dto;
 using LMS.Application.Study.Interfaces;
-using LMS.Domain.User.Entities;
+using LMS.Domain.Study.Entities;
+using LMS.Domain.User.Enums;
+using LMS.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.InteropServices;
 
 namespace LMS.Application.Study.UseCases.CourseGroup
 {
-    public class ExtendGroup : BaseUseCase<ExtendGroupDto, bool>
+    public class CreateGroup : BaseUseCase<CreateGroupDto, bool>
     {
         private IApplicationDbContext _context { get; }
         private IInstitutionAccessPolicy _institutionPolicy { get; }
         private IAccessPolicy _accessPolicy { get; }
 
 
-        public ExtendGroup(
+        public CreateGroup(
             IApplicationDbContext dbContext,
             IInstitutionAccessPolicy institutionPolicy,
             IAccessPolicy accessPolicy)
@@ -25,23 +28,21 @@ namespace LMS.Application.Study.UseCases.CourseGroup
             _institutionPolicy = institutionPolicy;
         }
 
-        public async Task<bool> Execute(ExtendGroupDto dto)
+        public async Task<bool> Execute(CreateGroupDto dto)
         {
             var member = await _institutionPolicy.GetMemberByCurrentUser(dto.InstitutionId);
-            await _institutionPolicy.EnforcePermission(
-                Domain.User.Enums.PermissionEnum.extend, typeof(GroupEntity), member, dto.GroupId);
+            await _institutionPolicy.EnforcePermission(PermissionEnum.write, typeof(CourseGroupEntity), member);
 
-            var group = await _context.CourseGroups.FirstOrDefaultAsync(x =>
-                x.Id == dto.GroupId && x.InstitutionId == dto.InstitutionId);
+            var gradeType = await _context.GradeTypes.FirstOrDefaultAsync(x => x.Id == dto.GradeTypeId);
 
-            Guard.Against.Null(group, message: "Group does not exists");
+            Guard.Against.Null(gradeType, message: "Grade type does not exists"); 
 
-            var student = await _context.Students.FirstOrDefaultAsync(x => 
-                x.Id == dto.StudentId && x.InstitutionMember.InstitutionId == dto.InstitutionId);
+            var group = CourseGroupEntity.Create(dto.Name, dto.InstitutionId, gradeType, dto.CourseId);
 
-            Guard.Against.Null(student, message: "Student does not exists"); 
+            var user = await _accessPolicy.GetCurrentUser();
 
-            group.AddStudents(student); 
+            user.Permissions.AddPermissionWithCode(group, PermissionEnum.all); 
+            _context.CourseGroups.Add(group);
             await _context.SaveChangesAsync(); 
 
             return true;
