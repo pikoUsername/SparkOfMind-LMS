@@ -27,4 +27,13 @@ namespace LMS.Application.Study.Dto
         public string? Fullname { get; set; } 
         public string? Phone { get; set; }
     }
+
+    public class UpdateStudentDto : InputInstitution
+    {
+        public Guid StudentId;
+        public string? Address;
+        public DateTime? BirthDate;
+        [Phone]
+        public string? Phone; 
+    }
 }
