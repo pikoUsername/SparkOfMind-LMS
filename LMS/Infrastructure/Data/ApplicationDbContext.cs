@@ -53,6 +53,7 @@ namespace LMS.Infrastructure.Data
         public DbSet<InstitutionRolesEntity> InstitutionRoles { get; set; }
         public DbSet<TeacherEntity> Teachers { get; set; }
         public DbSet<CourseEntity> Courses { get; set; }
+        public DbSet<BookRentEntity> BookRents { get; set; }
 
         private readonly IEventDispatcher _dispatcher;
 

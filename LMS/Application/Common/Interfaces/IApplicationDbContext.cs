@@ -53,6 +53,7 @@ namespace LMS.Application.Common.Interfaces
         DbSet<InstitutionRolesEntity> InstitutionRoles { get; set; }
         DbSet<TeacherEntity> Teachers { get; set; }
         DbSet<CourseEntity> Courses { get; set; }
+        DbSet<BookRentEntity> BookRents { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
         EntityEntry<TEntity> Update<TEntity>(TEntity entity) where TEntity : class;

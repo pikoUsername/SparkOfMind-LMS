@@ -35,6 +35,19 @@ namespace LMS.Application.Study.Dto
         public bool? IsOnline { get; set; }
     }
 
+    public class RentBookDto : InputInstitution
+    {
+        public Guid StudentId;
+        public Guid BookId;
+        public DateTime EndTime; 
+    }
+
+    public class PassBookDto : InputInstitution
+    {
+        public Guid BookId;
+        public Guid StudentId; 
+    }
+
     public class DeleteBookDto {
         [Required]
         public Guid BookId { get; set; }

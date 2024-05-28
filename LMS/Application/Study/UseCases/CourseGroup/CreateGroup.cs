@@ -4,6 +4,7 @@ using LMS.Application.Files.Interfaces;
 using LMS.Application.Study.Dto;
 using LMS.Application.Study.Interfaces;
 using LMS.Domain.Study.Entities;
+using LMS.Domain.User.Entities;
 using LMS.Domain.User.Enums;
 using LMS.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,7 @@ using System.Runtime.InteropServices;
 
 namespace LMS.Application.Study.UseCases.CourseGroup
 {
-    public class CreateGroup : BaseUseCase<CreateGroupDto, bool>
+    public class CreateGroup : BaseUseCase<CreateGroupDto, CourseGroupEntity>
     {
         private IApplicationDbContext _context { get; }
         private IInstitutionAccessPolicy _institutionPolicy { get; }
@@ -28,7 +29,7 @@ namespace LMS.Application.Study.UseCases.CourseGroup
             _institutionPolicy = institutionPolicy;
         }
 
-        public async Task<bool> Execute(CreateGroupDto dto)
+        public async Task<CourseGroupEntity> Execute(CreateGroupDto dto)
         {
             var member = await _institutionPolicy.GetMemberByCurrentUser(dto.InstitutionId);
             await _institutionPolicy.EnforcePermission(PermissionEnum.write, typeof(CourseGroupEntity), member);
@@ -45,7 +46,7 @@ namespace LMS.Application.Study.UseCases.CourseGroup
             _context.CourseGroups.Add(group);
             await _context.SaveChangesAsync(); 
 
-            return true;
+            return group;
         }
     }
 }

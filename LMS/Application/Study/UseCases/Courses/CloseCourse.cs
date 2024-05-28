@@ -2,19 +2,17 @@
 using LMS.Application.Common.UseCases;
 using LMS.Application.Study.Dto;
 using LMS.Application.Study.Interfaces;
-using LMS.Domain.Study.Entities;
-using Microsoft.AspNetCore.Components.Forms;
 
 namespace LMS.Application.Study.UseCases.Courses
 {
-    public class CreateCategory : BaseUseCase<CreateCategoryDto, CategoryEntity>
+    public class CloseCourse : BaseUseCase<CloseCourseDto, bool>
     {
         private IApplicationDbContext _context { get; }
         private IInstitutionAccessPolicy _institutionPolicy { get; }
         private IAccessPolicy _accessPolicy { get; }
 
 
-        public CreateCategory(
+        public CloseCourse(
             IApplicationDbContext dbContext,
             IInstitutionAccessPolicy institutionPolicy,
             IAccessPolicy accessPolicy)
@@ -23,8 +21,7 @@ namespace LMS.Application.Study.UseCases.Courses
             _context = dbContext;
             _institutionPolicy = institutionPolicy;
         }
-
-        public async Task<CategoryEntity> Execute(CreateCategoryDto dto)
+        public async Task<bool> Execute(CloseCourseDto dto)
         {
             return;
         }
