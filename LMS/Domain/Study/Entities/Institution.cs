@@ -1,4 +1,5 @@
-﻿using LMS.Domain.Files.Entities;
+﻿using LMS.Application.Study.EventHandlers;
+using LMS.Domain.Files.Entities;
 using LMS.Domain.Study.Enums;
 using LMS.Domain.Study.Events;
 using LMS.Domain.User.Entities;
@@ -19,7 +20,7 @@ namespace LMS.Domain.Study.Entities
         [Required]
         public string Address { get; set; } = null!;
         [Required]
-        public InstitutionTypes Type { get; set; } = InstitutionTypes.Online;
+        public InstitutionTypes Type { get; set; } = InstitutionTypes.EduCenter;
         [Required]
         public InstitutionStatus Status { get; set; } = InstitutionStatus.Active; 
         [Required]
@@ -27,8 +28,9 @@ namespace LMS.Domain.Study.Entities
         [Required]
         public ICollection<FileEntity> Images { get; set; } = [];
         [Required, ForeignKey(nameof(UserEntity))]
-        public Guid OwnerId { get; init; }  // not allowed to change owners of institution!!! 
+        public Guid OwnerId { get; init; }  // not allowed to change owner of institution!!! 
         public decimal Fee { get; private set; } = 0;
+        // marked for deletion 
         public bool Deleted { get; private set; } = false;
         public bool Blocked { get; private set; } = false;
         public string? BlockedReason { get; private set; } 
@@ -71,13 +73,20 @@ namespace LMS.Domain.Study.Entities
             AddDomainEvent(new InstitutionEmailChanged(this));
         }
 
-        public void Block(string reason)
+        public void Block(string reason, UserEntity blockedBy)
         {
             if (Blocked || Deleted)
-                throw new InvalidOperationException("Institution is already deleted");
+                throw new InvalidOperationException("Institution is already deleted or blocked");
             Blocked = true;
             BlockedReason = reason;
-            AddDomainEvent(new InstitutionBlocked(this, reason)); 
+            AddDomainEvent(new InstitutionBlocked(this, reason, blockedBy)); 
+        }
+
+        public void MarkDelete(string reason, UserEntity deletedBy)
+        {
+            Deleted = true;
+            BlockedReason = reason;
+            AddDomainEvent(new InstitutionMarkedDeleted(this, reason, deletedBy));
         }
     }
 }

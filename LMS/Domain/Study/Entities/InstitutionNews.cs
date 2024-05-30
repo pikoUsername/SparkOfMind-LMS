@@ -17,9 +17,16 @@ namespace LMS.Domain.Study.Entities
         public string Text { get; set; } = null!;
         public ICollection<FileEntity> Attachments { get; set; } = []; 
 
-        public static InstitutionNewsEntity Create()
+        public static InstitutionNewsEntity Create(string title, string allowedToSee, string text, Guid institutionId, ICollection<FileEntity> attachments)
         {
-            var result = new InstitutionNewsEntity();
+            var result = new InstitutionNewsEntity()
+            {
+                Title = title,
+                AllowedToSee = allowedToSee,
+                Text = text,
+                InstitutionId = institutionId,
+                Attachments = attachments, 
+            }; 
 
             result.AddDomainEvent(new NewEntityCreated(result));
 

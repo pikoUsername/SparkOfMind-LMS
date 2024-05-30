@@ -1,12 +1,12 @@
-﻿using KarmaMarketplace.Application.Common.Interactors;
+﻿using LMS.Application.Common.UseCases;
 
 namespace LMS.Application.Study.UseCases.Institution
 {
-    public class UpdateEvent : BaseUseCase<InputDTO, OutputDTO>
+    public class UpdateEvent : BaseUseCase<UpdateEvent, bool>
     {
         public UpdateEvent() { }
 
-        public async Task<OutputDTO> Execute(InputDTO dto)
+        public async Task<bool> Execute(UpdateEvent dto)
         {
             return;
         }

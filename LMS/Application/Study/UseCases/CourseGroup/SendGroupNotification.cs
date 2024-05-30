@@ -35,7 +35,7 @@ namespace LMS.Application.Study.UseCases.CourseGroup
             var group = await _context.CourseGroups
                 .Include(x => x.Students)
                 .FirstOrDefaultAsync(x => x.Id == dto.GroupId);
-            Guard.Against.Null(group, message: "Group does not exists");
+            Guard.Against.NotFound(dto.GroupId, group); 
 
             ICollection<FileEntity> Files = []; 
 

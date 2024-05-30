@@ -41,7 +41,7 @@ namespace LMS.Domain.User.Entities
                 }
             }
         }
-        [Required]
+        [Required, JsonIgnore]
         public string HashedPassword { get; set; } = null!;
         [Required]
         [EmailAddress(ErrorMessage = "Email address is not correct")]

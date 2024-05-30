@@ -4,6 +4,7 @@
     {
         School,
         College, 
-        Online
+        Online, 
+        EduCenter
     }
 }

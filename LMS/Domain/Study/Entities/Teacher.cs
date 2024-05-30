@@ -32,5 +32,20 @@ namespace LMS.Domain.Study.Entities
 
             return teacher; 
         }
+
+        public static TeacherEntity CreateWithMember(Guid institutionId, InstitutionMemberEntity member, UserEntity user, TeacherStatus status)
+        {
+            var teacher = new TeacherEntity()
+            {
+                InstitutionMember = member,
+                User = user,
+                InstitutionId = institutionId,
+                Status = status
+            };
+
+            teacher.AddDomainEvent(new TeacherCreated(teacher));
+
+            return teacher;
+        }
     }
 }

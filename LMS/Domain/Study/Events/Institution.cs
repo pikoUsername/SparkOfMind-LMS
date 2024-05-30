@@ -1,4 +1,5 @@
 ﻿using LMS.Domain.Study.Entities;
+using LMS.Domain.User.Entities;
 
 namespace LMS.Domain.Study.Events
 {
@@ -28,14 +29,22 @@ namespace LMS.Domain.Study.Events
         public InstitutionRolesEntity Role { get; set; } = entity; 
     }
 
-    public class InstitutionBlocked(InstitutionEntity institution, string reason) : DomainEvent {
+    public class InstitutionBlocked(InstitutionEntity institution, string reason, UserEntity blockedBy) : DomainEvent {
         public InstitutionEntity Institution { get; set; } = institution;
-        public string Reason { get; set; } = reason; 
+        public string Reason { get; set; } = reason;
+        public UserEntity BlockedBy { get; } = blockedBy; 
     }
 
     public class InstitutionRolePermissionAdded(InstitutionEntity institution, InstitutionRolesEntity role) : DomainEvent
     {
         public InstitutionRolesEntity Role { get; } = role;
         public InstitutionEntity Institution { get; } = institution; 
+    }
+
+    public class InstitutionMarkedDeleted(InstitutionEntity institution, string reason, UserEntity blockedBy) : DomainEvent
+    {
+        public InstitutionEntity Institution { get; set; } = institution;
+        public string Reason { get; set; } = reason;
+        public UserEntity BlockedBy { get; } = blockedBy;
     }
 }
