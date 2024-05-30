@@ -57,6 +57,6 @@ namespace LMS.Application.Study.Dto
 
     public class AcceptMembershipDto 
     {
-        public string Token; 
+        public Guid InvitationId; 
     } 
 }

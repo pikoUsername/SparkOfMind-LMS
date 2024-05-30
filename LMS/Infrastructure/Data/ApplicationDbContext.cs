@@ -12,6 +12,7 @@ namespace LMS.Infrastructure.Data
 {
     public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
+        // User 
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<PermissionEntity> Permissions { get; set; }
         public DbSet<GroupEntity> Groups { get; set; }
@@ -36,6 +37,7 @@ namespace LMS.Infrastructure.Data
 
         // Study 
         public DbSet<StudentEntity> Students { get; set; }
+        public DbSet<StudentCourseEntity> StudentCourses { get; set; }
         public DbSet<InstitutionEntity> Institutions { get; set; }
         public DbSet<AssignmentEntity> Assigments { get; set; }
         public DbSet<AttendanceEntity> Attendance { get; set; }
@@ -53,6 +55,7 @@ namespace LMS.Infrastructure.Data
         public DbSet<InstitutionRolesEntity> InstitutionRoles { get; set; }
         public DbSet<TeacherEntity> Teachers { get; set; }
         public DbSet<CourseEntity> Courses { get; set; }
+        public DbSet<InvitationEntity> Invitations { get; set; }
         public DbSet<BookRentEntity> BookRents { get; set; }
 
         private readonly IEventDispatcher _dispatcher;
