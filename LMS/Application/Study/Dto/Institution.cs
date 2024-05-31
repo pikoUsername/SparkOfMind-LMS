@@ -33,7 +33,6 @@ namespace LMS.Application.Study.Dto
         public string? Email;
         public string? Description;
         public InstitutionStatus? Status;
-        public decimal? Fee;
     }
 
     public class DeleteInstitutionDto

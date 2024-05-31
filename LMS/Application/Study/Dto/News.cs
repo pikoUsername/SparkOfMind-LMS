@@ -14,6 +14,11 @@ namespace LMS.Application.Study.Dto
     public class UpdateNewsDto : InputInstitution
     {
         public Guid NewsId; 
+        public string? Title;
+        public string? Text;
+
+        public List<CreateFileDto> Attachments = [];
+        public List<Guid> AllowedToSee = [];
     }
 
     public class DeleteNewsDto : InputInstitution

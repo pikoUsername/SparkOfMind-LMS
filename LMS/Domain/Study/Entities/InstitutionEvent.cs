@@ -1,4 +1,5 @@
-﻿using LMS.Domain.Study.Events;
+﻿using LMS.Domain.Files.Entities;
+using LMS.Domain.Study.Events;
 using LMS.Domain.User.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,8 +21,16 @@ namespace LMS.Domain.Study.Entities
         public UserEntity CreatedBy { get; set; } = null!; 
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public ICollection<FileEntity> Attachments { get; set; } = []; 
 
-        public static InstitutionEventEntity Create(string title, string text, Guid institutionId, UserEntity createdBy, DateTime? startDate = null, DateTime? endDate = null)
+        public static InstitutionEventEntity Create(
+            string title, 
+            string text, 
+            Guid institutionId,
+            UserEntity createdBy, 
+            ICollection<FileEntity> files, 
+            DateTime? startDate = null, 
+            DateTime? endDate = null)
         {
             var @event = new InstitutionEventEntity() { 
                 Title = title, 
