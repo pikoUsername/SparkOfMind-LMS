@@ -13,6 +13,7 @@ namespace LMS.Application.Study.Dto
 
     public class UpdateNewsDto : InputInstitution
     {
+        public Guid NewsId; 
     }
 
     public class DeleteNewsDto : InputInstitution

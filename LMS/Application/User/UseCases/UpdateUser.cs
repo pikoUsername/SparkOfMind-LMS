@@ -70,7 +70,7 @@ namespace LMS.Application.User.UseCases
             }
             if (dto.Role != null)
             {
-                if (await AccessPolicy.IsAllowed("edit", user, byUser))
+                if (await AccessPolicy.IsAllowed(PermissionEnum.edit, user, byUser))
                 {
                     var role = await Context.Roles.FirstOrDefaultAsync(x => x.Role == dto.Role);
 
