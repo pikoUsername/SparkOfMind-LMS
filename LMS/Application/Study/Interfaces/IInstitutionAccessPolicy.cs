@@ -13,6 +13,8 @@ namespace LMS.Application.Study.Interfaces
         Task EnforceMembership(Guid institutionId);
         Task EnforceMembership(Guid userId, Guid institutionId); 
         Task<InstitutionMemberEntity> GetMember(Guid userId, Guid institutionId);
-        Task<InstitutionMemberEntity> GetMemberByCurrentUser(Guid institutionId); 
+        Task<InstitutionMemberEntity> GetMemberByCurrentUser(Guid institutionId);
+        Task<bool> IsOwner(Guid institutionId);
+        Task<bool> IsOwner(Guid userId, Guid institutionId); 
     }
 }

@@ -10,7 +10,7 @@ namespace LMS.Application.Study.UseCases.Institution
 
         public async Task<bool> Execute(UpdateNewsDto dto)
         {
-            return;
+            return true;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace LMS.Application.Study.UseCases.Institution
 
         public async Task<bool> Execute(UpdateEvent dto)
         {
-            return;
+            return true;
         }
     }
 }

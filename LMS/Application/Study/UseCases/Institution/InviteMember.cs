@@ -37,11 +37,6 @@ namespace LMS.Application.Study.UseCases.Institution
 
             Guard.Against.NotFound(invitation.InstiutionId, institution); 
 
-            if (institution.OwnerId != user.Id)
-            {
-                throw new AccessDenied("you are not owner"); 
-            }
-
             var member = InstitutionMemberEntity.Create(user.Id, institution.Id);
 
             _context.InstitutionMembers.Add(member);
@@ -63,20 +58,25 @@ namespace LMS.Application.Study.UseCases.Institution
     public class InviteMember : BaseUseCase<InviteMemberDto, InvitationEntity> 
     {
         private IApplicationDbContext _context { get; }
+        private IInstitutionAccessPolicy _institutionPolicy { get; }
         private IAccessPolicy _accessPolicy { get; }
 
         public InviteMember(
             IApplicationDbContext dbContext,
+            IInstitutionAccessPolicy institutionPolicy,
             IAccessPolicy accessPolicy)
         {
             _accessPolicy = accessPolicy;
             _context = dbContext;
+            _institutionPolicy = institutionPolicy;
         }
 
         public async Task<InvitationEntity> Execute(InviteMemberDto dto)
         {
             var user = await _accessPolicy.GetCurrentUser();
-            var institution = await _context.Institutions.FirstOrDefaultAsync(x => x.Id == dto.InstitutionId);
+            var institution = await _context.Institutions
+                .Include(x => x.Images)
+                .FirstOrDefaultAsync(x => x.Id == dto.InstitutionId);
 
             Guard.Against.NotFound(dto.InstitutionId, institution);
 

@@ -7,8 +7,9 @@ namespace LMS.Domain.Study.Events
         public InstitutionMemberEntity Member { get; set; } = member; 
     }
 
-    public class MemberRolesChanged(InstitutionMemberEntity member, ICollection<InstitutionRolesEntity> roles) : DomainEvent {
+    public class MemberRolesChanged(InstitutionMemberEntity member, ICollection<InstitutionRolesEntity> roles, string operation) : DomainEvent {
         public InstitutionMemberEntity Member { get; set; } = member;
-        public ICollection<InstitutionRolesEntity> Roles { get; set; } = roles; 
+        public ICollection<InstitutionRolesEntity> Roles { get; set; } = roles;
+        public string Operation { get; set; } = operation; 
     }
 }

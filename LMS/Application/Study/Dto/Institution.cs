@@ -1,4 +1,5 @@
-﻿using LMS.Domain.Study.Enums;
+﻿using LMS.Application.Common.Models;
+using LMS.Domain.Study.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace LMS.Application.Study.Dto
@@ -59,4 +60,16 @@ namespace LMS.Application.Study.Dto
     {
         public Guid InvitationId; 
     } 
+
+    public class GetInstitutionsListDto : InputPagination
+    {
+        public string? Name;
+        public string? Address;
+        public string? Phone; 
+    }
+
+    public class GetInstitutionDto
+    {
+        public Guid InstitutionId; 
+    }
 }

@@ -16,4 +16,9 @@
         public Guid RoleId;
         public Guid MemberId; 
     }
+
+    public class DeleteRoleFromMemberDto : InputInstitution {
+        public Guid RoleId;
+        public Guid MemberId;
+    }
 }

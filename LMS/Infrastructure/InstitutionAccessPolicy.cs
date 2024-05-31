@@ -68,6 +68,7 @@ namespace LMS.Infrastructure
 
         public async Task<InstitutionMemberEntity> GetMember(Guid userId, Guid institutionId)
         {
+            // do not change includes, it will break other parts of code that rely on loading of Roles and Permissions!!! 
             var member = await _context.InstitutionMembers
                 .Include(x => x.Roles)
                     .ThenInclude(x => x.Permissions)
@@ -85,6 +86,22 @@ namespace LMS.Infrastructure
                 throw new AccessDenied("Unauthorized");
 
             return await GetMember((Guid)currentUser.Id, institutionId);
+        }
+
+        public async Task<bool> IsOwner(Guid institutionId)
+        {
+            if (currentUser.Id == null)
+                throw new AccessDenied("Unauthorized");
+
+            return await IsOwner((Guid)currentUser.Id, institutionId); 
+        }
+        public async Task<bool> IsOwner(Guid userId, Guid institutionId)
+        {
+            var institution = await _context.Institutions.FirstOrDefaultAsync(x => x.Id == institutionId);
+
+            Guard.Against.NotFound(institutionId, institution);
+
+            return institution.OwnerId == userId;
         }
     }
 }

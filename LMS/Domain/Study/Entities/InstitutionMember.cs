@@ -31,14 +31,25 @@ namespace LMS.Domain.Study.Entities
         {
             Roles = [.. roles]; 
 
-            AddDomainEvent(new MemberRolesChanged(this, roles));
+            AddDomainEvent(new MemberRolesChanged(this, roles, "set"));
         }
 
         public void AddRoles(params InstitutionRolesEntity[] roles)
         {
             Roles.AddRange(roles);
 
-            AddDomainEvent(new MemberRolesChanged(this, roles));
+            AddDomainEvent(new MemberRolesChanged(this, roles, "add"));
+        }
+
+        public void DeleteRole(Guid roleId)
+        {
+            var role = Roles.Find(x => x.Id == roleId);
+
+            Guard.Against.NotFound(roleId, role); 
+
+            Roles.Remove(role);
+
+            AddDomainEvent(new MemberRolesChanged(this, [role], "delete")); 
         }
 
         public List<PermissionEntity> GetAllPermissions()

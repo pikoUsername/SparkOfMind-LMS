@@ -28,7 +28,7 @@ namespace LMS.Application.Payment.UseCases
 
             Guard.Against.Null(wallet, message: "Wallet does not exists");
 
-            await _accessPolicy.EnforceIsAllowed("read", wallet);
+            await _accessPolicy.EnforceIsAllowed(Domain.User.Enums.PermissionEnum.read, wallet);
 
             var result = await _context.Transactions
                 .IncludeStandard()

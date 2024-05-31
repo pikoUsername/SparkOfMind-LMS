@@ -26,7 +26,7 @@ namespace LMS.Application.Study.UseCases.Institution
         public async Task<InstitutionEventEntity> Execute(CreateEventDto dto)
         {
             var member = await _institutionPolicy.GetMemberByCurrentUser(dto.InstitutionId); 
-            await _institutionPolicy.EnforcePermission(Domain.User.Enums.PermissionEnum.write, typeof(InstitutionEventEntity), );
+            await _institutionPolicy.EnforcePermission(Domain.User.Enums.PermissionEnum.write, typeof(InstitutionEventEntity), member);
 
             var byUser = await _context.Users
                 .Include(x => x.Permissions)
