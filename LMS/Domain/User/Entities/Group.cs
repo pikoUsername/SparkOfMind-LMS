@@ -14,13 +14,17 @@ namespace LMS.Domain.User.Entities
         [JsonIgnore]
         public ICollection<UserEntity> Users { get; set; } = [];
 
-        public static GroupEntity Create(string name)
+        public static GroupEntity Create(string name, params PermissionEntity[] permissions)
         {
+            PermissionCollection perms = [];
+
+            perms.AddRange(permissions); 
+
             var group = new GroupEntity()
             {
                 Name = name,
                 Users = [],
-                Permissions = [],
+                Permissions = perms,
             };
 
             group.AddDomainEvent(new GroupCreated(group));

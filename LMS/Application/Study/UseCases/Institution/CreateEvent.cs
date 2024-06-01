@@ -34,7 +34,7 @@ namespace LMS.Application.Study.UseCases.Institution
 
             Guard.Against.NotFound(member.UserId, byUser); 
 
-            var @event = InstitutionEventEntity.Create(dto.Title, dto.Text, dto.InstitutionId, byUser, dto.StartsAt, dto.EndsAt);
+            var @event = InstitutionEventEntity.Create(dto.Title, dto.Text, dto.InstitutionId, byUser, [], dto.StartsAt, dto.EndsAt);
 
             byUser.Permissions.AddPermissionWithCode(@event, Domain.User.Enums.PermissionEnum.all); 
 

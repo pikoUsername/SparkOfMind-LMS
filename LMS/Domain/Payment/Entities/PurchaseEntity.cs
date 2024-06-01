@@ -74,7 +74,7 @@ namespace LMS.Domain.Payment.Entities
         public void Complete(ReviewEntity review)
         {
             if (Status == PurchaseStatus.Success || Completed)
-                throw new PurchaseIsAlreadyCompleted(Id);
+                throw new PurchaseIsAlreadyCompleted(this);
 
             Completed = true;
             ReviewId = review.Id;

@@ -26,7 +26,7 @@ namespace LMS.Application.Payment.UseCases
                 .IncludeStandard()
                 .AsQueryable();
 
-            if (!await _accessPolicy.IsAllowed("read", "*") && dto.UserId != null)
+            if (!await _accessPolicy.IsAllowed(PermissionEnum.read, "*") && dto.UserId != null)
             {
                 throw new AccessDenied(null);
             }

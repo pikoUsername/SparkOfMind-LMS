@@ -55,6 +55,11 @@ namespace LMS.Domain.User.Services
                 throw new ArgumentNullException(nameof(relation), "Relation object cannot be null.");
             }
 
+            if (relation is Type)
+            {
+                return relation.GetType().Name; 
+            }
+
             if (relation is string stringRelation)
             {
                 return stringRelation;

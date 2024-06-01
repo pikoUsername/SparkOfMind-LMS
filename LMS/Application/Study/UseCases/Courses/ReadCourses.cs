@@ -61,6 +61,8 @@ namespace LMS.Application.Study.UseCases.Courses
                 query = query.Where(x => x.CurrentPrice.Amount < dto.EndingPrice); 
             if (dto.StartingPrice != null)
                 query = query.Where(x => x.CurrentPrice.Amount > dto.StartingPrice);
+            if (!await _accessPolicy.IsAllowed(Domain.User.Enums.PermissionEnum.read, typeof(CourseEntity)))
+                query = query.Where(x => x.Closed == false); 
 
             query = query.Paginate(dto.Start, dto.Ends); 
 

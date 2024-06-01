@@ -28,7 +28,7 @@ namespace LMS.Application.Payment.UseCases
 
             Guard.Against.Null(wallet, message: "Wallet does not exists");
 
-            await _accessPolicy.EnforceRelationship("read", wallet, wallet.User.Id);
+            await _accessPolicy.EnforceRelationship(PermissionEnum.read, wallet, wallet.User.Id);
 
             return wallet;
         }

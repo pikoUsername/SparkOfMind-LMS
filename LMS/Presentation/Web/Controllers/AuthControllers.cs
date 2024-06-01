@@ -39,7 +39,7 @@ namespace LMS.Presentation.Web.Controllers
                     {
                         EmailAddress = model.Email,
                         Password = model.Password,
-                        UserName = model.Name
+                        Name = model.Name
                     }
                 );
 
