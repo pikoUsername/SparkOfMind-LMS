@@ -26,7 +26,7 @@ namespace LMS.Application.Payment.UseCases
                 .IncludeStandard()
                 .AsQueryable();
 
-            if (!await _accessPolicy.CanAccess(UserRoles.Moderator) && dto.UserId != null)
+            if (!await _accessPolicy.IsAllowed(PermissionEnum.read, "*") && dto.UserId != null)
             {
                 throw new AccessDenied(null);
             }
@@ -34,10 +34,10 @@ namespace LMS.Application.Payment.UseCases
             {
                 query = query.Where(x => x.Transaction.CreatedByUser.Id == dto.UserId);
             }
-            if (dto.SoldByUserId != null)
-            {
-                query = query.Where(x => x.Product.CreatedById == dto.SoldByUserId);
-            }
+            //if (dto.SoldByUserId != null)
+            //{
+            //    query = query.Where(x => x.Product.CreatedById == dto.SoldByUserId);
+            //}
             if (dto.StartTime != null && dto.EndTime != null)
             {
                 query = query

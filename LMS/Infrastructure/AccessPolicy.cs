@@ -1,7 +1,8 @@
 ﻿using LMS.Application.Common.Interfaces;
-using LMS.Application.User.Exceptions;
 using LMS.Domain.User.Entities;
 using LMS.Domain.User.Enums;
+using LMS.Domain.User.Interfaces;
+using LMS.Domain.User.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Infrastructure
@@ -10,98 +11,118 @@ namespace LMS.Infrastructure
     {
         private readonly IApplicationDbContext _context;
         private readonly IUser _currentUser;
-        private readonly ILogger _logger;
         private UserEntity? _cachedCurrentUser;
 
-        public AccessPolicy(
-            IApplicationDbContext context, IUser user, ILogger<AccessPolicy> logger)
+        public AccessPolicy(IApplicationDbContext context, IUser user)
         {
             _context = context;
             _currentUser = user;
-            _logger = logger;
-            _cachedCurrentUser = null;
         }
 
-        public static void UnauthorizedIfNull(Guid? userId)
+        public Task<bool> IsAllowed(PermissionEnum action, object relation, IAccessUser? actor = null)
         {
-            if (userId == null)
+            if (actor == null) 
+                actor = (IAccessUser)GetCurrentUser();
+            if (actor.IsSuperadmin)
+                return Task.FromResult(true);
+            foreach (var permissionAcl in actor.GetPermissions())
             {
-                throw new Unauthorized();
-            }
-        }
-
-        public async Task<bool> CanAccess(UserRoles role, Guid? userId = null)
-        {
-            if (_cachedCurrentUser != null)
-            {
-                if (_cachedCurrentUser.Id == userId || _cachedCurrentUser.Id == _currentUser.Id)
+                if (PermissionService.CheckPermissions(permissionAcl.Join(), action, relation))
                 {
-                    return _cachedCurrentUser.Role >= role;
+                    return Task.FromResult(true);
                 }
             }
-            if (userId == null)
+            return Task.FromResult(false);
+        }
+
+        public Task<bool> Role(UserRoles role, IAccessUser? actor = null)
+        {
+            if (actor == null)
+                actor = (IAccessUser)GetCurrentUser();
+            if (actor.IsSuperadmin)
+                return Task.FromResult(true); 
+            foreach (var userRole in actor.GetRoles())
             {
-                if (_currentUser.Id == null)
+                if (userRole.Role == role)
                 {
-                    return false;
+                    return Task.FromResult(true); 
                 }
-                return await CanAccess(role, _currentUser.Id);
             }
-
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
-            if (user == null)
-            {
-                return false;
-            }
-            if (user.Blocked == true)
-            {
-                return false;
-            }
-
-            _cachedCurrentUser = user;
-            return user.Role >= role;
+            return Task.FromResult(false);
         }
 
-        public async Task FailIfNoAccess(UserRoles role, Guid? userId = null)
+        public async Task<bool> Relationship(PermissionEnum action, object relation, Guid ownerId, IAccessUser? actor = null)
         {
-            var canAccess = await CanAccess(role, userId);
-
-            if (!canAccess)
+            var result = await IsAllowed(action, relation, actor) || ownerId == actor.Id; 
+            if (!result)
             {
-                throw new AccessDenied($"Role: {role}, userId: {userId}, currentUserId: {_currentUser.Id}");
+                throw new AccessDenied("relationship check failed"); 
             }
+            return result; 
         }
 
-        public async Task<bool> CanAccessOrSelf(Guid byUserId, UserRoles role, Guid? userId = null)
+        public async Task<UserEntity> GetCurrentUser()
         {
-            if (userId == byUserId)
-            {
-                return true;
-            }
-            return userId == byUserId || await CanAccess(role, byUserId);
-        }
-
-        public async Task FailIfNotSelfOrNoAccess(Guid byUserId, UserRoles role, Guid? userId = null)
-        {
-            if (!await CanAccessOrSelf(role: role, byUserId: byUserId, userId: _currentUser.Id))
-            {
-                throw new AccessDenied($"Role: {role}, userId: {userId}, currentUserId: {_currentUser.Id}, byUserId: {byUserId}");
-            }
-        }
-
-        async public Task<UserEntity> GetCurrentUser()
-        {
-            if (_cachedCurrentUser?.Id != _currentUser.Id)
-            {
-                _cachedCurrentUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == _currentUser.Id);
-            }
-
+            if (_currentUser.Id == null)
+                throw new AccessDenied("Unauthorized"); 
             if (_cachedCurrentUser == null)
             {
-                throw new AccessDenied("User is not authroized");
-            }
+                _cachedCurrentUser = await GetUserById((Guid)_currentUser.Id); 
 
+                if (_cachedCurrentUser == null || _cachedCurrentUser.Blocked)
+                {
+                    throw new AccessDenied("User is not authorized");
+                }
+            }
             return _cachedCurrentUser;
+        }
+
+        private async Task<UserEntity> GetUserById(Guid userId)
+        {
+            // performance eater!!! 
+            var user = await _context.Users
+                .Include(x => x.Roles)
+                .Include(x => x.Groups)
+                    .ThenInclude(x => x.Permissions)
+                .Include(x => x.Permissions)
+                .FirstOrDefaultAsync(x => x.Id == userId);
+
+            Guard.Against.Null(user, message: "Actor does not exists");
+
+            return user; 
+        }
+
+        public async Task EnforceIsAllowed(PermissionEnum action, object relation, Guid? actorId = null)
+        {
+            var actor = actorId.HasValue ? await GetUserById(actorId.Value) : await GetCurrentUser();
+
+            var allowed = await IsAllowed(action, relation, actor);
+            if (!allowed)
+            {
+                throw new AccessDenied($"User is not allowed to perform action '{action}' on relation '{relation}'");
+            }
+        }
+
+        public async Task EnforceRole(UserRoles role, Guid? actorId = null)
+        {
+            var actor = actorId.HasValue ? await GetUserById(actorId.Value) : await GetCurrentUser();
+
+            var hasRole = await Role(role, actor);
+            if (!hasRole)
+            {
+                throw new AccessDenied($"User does not have the required role '{role}'");
+            }
+        }
+
+        public async Task EnforceRelationship(PermissionEnum action, object relation, Guid ownerId, Guid? actorId = null)
+        {
+            var actor = actorId.HasValue ? await GetUserById(actorId.Value) : await GetCurrentUser();
+
+            var allowed = await Relationship(action, relation, ownerId, actor);
+            if (!allowed)
+            {
+                throw new AccessDenied($"User is not allowed to perform action '{action}' on relation '{relation}' with ownerId '{ownerId}'");
+            }
         }
     }
 }

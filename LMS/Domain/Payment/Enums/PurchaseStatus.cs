@@ -6,22 +6,11 @@ namespace LMS.Domain.Payment.Enums
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum PurchaseStatus
     {
-        [Display(Name = "CHATTING")]
-        Chatting,
-
-        [Display(Name = "PROCESSING")]
+        Teaching,   
         Processing,
-
-        [Display(Name = "FAILED")]
         Failed,
-
-        [Display(Name = "SUCCESS")]
         Success,
-
-        [Display(Name = "REJECTED")]
         Rejected,
-
-        [Display(Name = "EXPIRED")]
         Expired,
     }
 }

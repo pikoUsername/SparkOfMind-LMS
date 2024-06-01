@@ -32,7 +32,7 @@ namespace LMS.Application.Files.UseCases
         {
             if (!dto.Directly)
             {
-                if (!await _accessPolicy.CanAccess(UserRoles.SuperAdmin))
+                if (!await _accessPolicy.Role(UserRoles.Admin))
                 {
                     return false;
                 }

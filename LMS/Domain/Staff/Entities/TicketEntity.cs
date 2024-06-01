@@ -14,8 +14,9 @@ namespace LMS.Domain.Staff.Entities
         [Required]
         public string Text { get; set; } = string.Empty;
         [Required]
-        public string Subject { get; set; } = string.Empty;
+        public TicketSubjectEntity Subject { get; set; } = null!;
         public List<FileEntity> Files { get; set; } = [];
+        public Guid? AnsweredCommentId { get; set; }
         [Required]
         public TicketStatus Status { get; private set; } = TicketStatus.Open;
         public UserEntity? AssignedUser { get; private set; } = null!;
@@ -33,7 +34,7 @@ namespace LMS.Domain.Staff.Entities
         }
 
         public static TicketEntity Create(
-            string text, string subject, UserEntity createdBy, List<FileEntity> files)
+            string text, TicketSubjectEntity subject, UserEntity createdBy, List<FileEntity> files)
         {
             var ticket = new TicketEntity()
             {

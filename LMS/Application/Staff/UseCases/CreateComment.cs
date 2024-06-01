@@ -30,7 +30,8 @@ namespace LMS.Application.Staff.UseCases
 
             var byUser = await _accessPolicy.GetCurrentUser();
 
-            if (!await _accessPolicy.CanAccess(Domain.User.Enums.UserRoles.Moderator) && ticket.CreatedBy.Id != byUser.Id)
+            if (!await _accessPolicy.IsAllowed(Domain.User.Enums.PermissionEnum.extend, ticket) 
+                && ticket.CreatedBy.Id != byUser.Id)
             {
                 throw new AccessDenied("ticket is not created by you");
             }

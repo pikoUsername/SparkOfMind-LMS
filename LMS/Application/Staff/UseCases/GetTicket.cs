@@ -33,7 +33,7 @@ namespace LMS.Application.Staff.UseCases
             Guard.Against.Null(ticket, $"Ticket with ID {dto.TicketId} not found.");
 
 
-            if (ticket.CreatedBy.Id != currentUser.Id && !await _accessPolicy.CanAccess(UserRoles.Moderator))
+            if (ticket.CreatedBy.Id != currentUser.Id && !await _accessPolicy.IsAllowed(PermissionEnum.read, ticket))
             {
                 throw new AccessDenied("You are not authorized to access this ticket.");
             }

@@ -19,7 +19,7 @@ namespace LMS.Application.Payment.UseCases
 
         public async Task<bool> Execute(BalanceOperationDto dto)
         {
-            await _accessPolicy.FailIfNoAccess(UserRoles.Admin);
+            await _accessPolicy.EnforceRole(UserRoles.Admin);
 
             var wallet = await _context.Wallets.FirstOrDefaultAsync(x => x.Id == dto.WalletId);
 

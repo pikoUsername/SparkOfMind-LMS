@@ -10,6 +10,7 @@ namespace LMS.Application.Payment.UseCases
     public class HandleGatewayResult : BaseUseCase<GatewayResultDto, bool>
     {
         private IApplicationDbContext _context;
+        // transaction id: {tx_uuid}:{purchase_uuid}
         private readonly Regex transactionIdRegex = new Regex(
             "[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}");
 

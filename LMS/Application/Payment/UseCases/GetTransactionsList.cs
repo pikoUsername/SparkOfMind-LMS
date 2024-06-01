@@ -2,7 +2,6 @@
 using LMS.Application.Common.UseCases;
 using LMS.Application.Payment.Dto;
 using LMS.Domain.Payment.Entities;
-using LMS.Domain.User.Enums;
 using LMS.Infrastructure.Data.Queries;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,8 +28,7 @@ namespace LMS.Application.Payment.UseCases
 
             Guard.Against.Null(wallet, message: "Wallet does not exists");
 
-            await _accessPolicy.FailIfNotSelfOrNoAccess(
-                wallet.UserId, UserRoles.Moderator);
+            await _accessPolicy.EnforceIsAllowed(Domain.User.Enums.PermissionEnum.read, wallet);
 
             var result = await _context.Transactions
                 .IncludeStandard()

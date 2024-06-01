@@ -20,11 +20,11 @@ namespace LMS.Application.Staff.UseCases
         {
             Guard.Against.Null(commentId, nameof(commentId));
 
-            await _accessPolicy.FailIfNoAccess(UserRoles.Admin);
-
             var comment = await _context.TicketComments.FindAsync(commentId);
 
             Guard.Against.Null(comment, $"Comment with ID {commentId} does not exist.");
+
+            await _accessPolicy.EnforceIsAllowed(PermissionEnum.delete, comment);
 
             _context.TicketComments.Remove(comment);
             await _context.SaveChangesAsync();

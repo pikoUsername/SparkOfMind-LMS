@@ -8,5 +8,7 @@ namespace LMS.Domain.User.Entities
         public string Reason { get; set; } = null!;
         [ForeignKey(nameof(UserEntity))]
         public Guid ByUserId { get; set; }
+        public bool Expired { get; set; } = false;
+        public DateTime? ExpiresIn { get; set; }
     }
 }

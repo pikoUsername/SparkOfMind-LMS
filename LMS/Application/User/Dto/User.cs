@@ -7,8 +7,10 @@ namespace LMS.Application.User.Dto
     public class CreateUserDto
     {
         [Required]
-        public string UserName { get; set; } = null!;
-        [Required]
+        public string Name { get; set; } = null!;
+        [Required] 
+        public string Surname { get; set; } = null!;
+        public string? Phone { get; set; } 
         public string Password { get; set; } = null!;
         [Required]
         public string EmailAddress { get; set; } = null!;
@@ -23,7 +25,7 @@ namespace LMS.Application.User.Dto
     public class GetListUserDto
     {
         public UserRoles? Role { get; set; }
-        public string? Name { get; set; }
+        public string? Fullname { get; set; }
     }
 
     public class WarnUserDto
@@ -49,6 +51,7 @@ namespace LMS.Application.User.Dto
         public CreateFileDto? Avatar { get; set; }
         public string? Description { get; set; }
         public string? Name { get; set; }
+        public string? Surname { get; set; }
         public string? OldPassword { get; set; }
         public string? NewPassword { get; set; }
         public string? TelegramId { get; set; }

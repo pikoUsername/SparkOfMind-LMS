@@ -21,22 +21,25 @@ namespace LMS.Application.User.UseCases
 
         public async Task<NotificationCreatedDto> Execute(CreateNotificationDto dto)
         {
-            await _accessPolicy.FailIfNoAccess(UserRoles.Moderator);
             List<UserEntity> users = new List<UserEntity>();
 
             if (dto.Role != null)
             {
-                await _accessPolicy.FailIfNoAccess(UserRoles.Owner);
-
                 if (dto.Role == UserRoles.User)
                 {
                     throw new AccessDenied("Impossible to ping that many users");
                 }
 
-                users = await _context.Users.AsNoTracking().Where(x => x.Role == dto.Role).ToListAsync();
+                users = await _context.Users
+                    .AsNoTracking()
+                    .Where(x => 
+                        x.Roles.Any(x => x.Role == dto.Role))
+                    .ToListAsync();
             }
             else if (dto.UserId != null)
             {
+                await _accessPolicy.EnforceIsAllowed(PermissionEnum.write, _context.Notifications.EntityType); 
+
                 users = await _context.Users.AsNoTracking().Where(x => x.Id == dto.UserId).ToListAsync();
             }
 

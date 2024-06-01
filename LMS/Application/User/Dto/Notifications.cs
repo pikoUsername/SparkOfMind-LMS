@@ -1,4 +1,5 @@
 ﻿using LMS.Application.Common.Models;
+using LMS.Application.Files.Dto;
 using LMS.Domain.User.Enums;
 using System.ComponentModel.DataAnnotations;
 

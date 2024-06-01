@@ -1,13 +1,21 @@
-﻿namespace LMS.Domain.Payment.Exceptions
+﻿using LMS.Domain.Payment.Entities;
+
+namespace LMS.Domain.Payment.Exceptions
 {
     public class PurchaseIsAlreadyCompleted : Exception
     {
-        public Guid PurchaseId { get; set; }
-
-        public PurchaseIsAlreadyCompleted(Guid purchaseId)
-            : base($"Purchase is already completed, purchaseid: {purchaseId}")
+        public PurchaseIsAlreadyCompleted(PurchaseEntity purchase)
+            : base($"Purchase is already completed, purchaseid: {purchase.Id}")
         {
-            PurchaseId = purchaseId;
+        }
+    }
+
+    public class PurchaseIsNotConfirmed : Exception
+    {
+        public PurchaseIsNotConfirmed(PurchaseEntity purchase) 
+            : base($"Purchase is not confirmed, confirm by other member of purchase, purchaseId: {purchase.Id}")
+        {
+
         }
     }
 }

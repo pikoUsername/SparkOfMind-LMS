@@ -2,6 +2,8 @@
 using LMS.Application.User.Dto;
 using LMS.Application.User.Interfaces;
 using LMS.Domain.Payment.Entities;
+using LMS.Domain.Staff.Entities;
+using LMS.Domain.Study.Entities;
 using LMS.Domain.User.Entities;
 using LMS.Domain.User.Enums;
 using LMS.Infrastructure.Adapters.Payment;
@@ -71,17 +73,36 @@ namespace LMS.Infrastructure.Data
         public async Task TrySeedAsync()
         {
             // Default users
-            var administrator = new UserEntity { UserName = "admin", Email = "admin@localhost" };
+            //var administrator = new UserEntity { UserName = "admin", Email = "admin@localhost" };
 
-            if (_context.Users.All(u => u.UserName != administrator.UserName))
+            //if (_context.Users.All(u => u.UserName != administrator.UserName))
+            //{
+            //    await _userService.Create().Execute(new CreateUserDto()
+            //    {
+            //        UserName = administrator.UserName,
+            //        EmailAddress = administrator.Email,
+            //        Password = administrator.UserName,
+            //        Role = UserRoles.SuperAdmin
+            //    });
+            //}
+
+            if (!_context.Roles.Any())
             {
-                await _userService.Create().Execute(new CreateUserDto()
-                {
-                    UserName = administrator.UserName,
-                    EmailAddress = administrator.Email,
-                    Password = administrator.UserName,
-                    Role = UserRoles.SuperAdmin
-                });
+                var adminRole = GroupEntity.Create(
+                    UserRoles.Admin.ToString(),
+                    PermissionEntity.Create(nameof(TicketEntity), "*", PermissionEnum.all),
+                    PermissionEntity.Create(nameof(TicketCommentEntity), "*", PermissionEnum.all),
+                    PermissionEntity.Create(nameof(PurchaseEntity), "*", PermissionEnum.read),
+                    PermissionEntity.Create(nameof(GroupEntity), "*", PermissionEnum.read),
+                    PermissionEntity.Create(nameof(TransactionEntity), "*", PermissionEnum.read), 
+                    PermissionEntity.Create(nameof(CategoryEntity), "*", PermissionEnum.all), 
+                    PermissionEntity.Create(nameof(CourseEntity), "*", PermissionEnum.delete), 
+                    PermissionEntity.Create(nameof(NotificationEntity), "*", PermissionEnum.all));
+
+                List<GroupEntity> groups = [
+                    adminRole,
+                ];
+                _context.Groups.AddRange(groups); 
             }
 
             // Default data
@@ -90,9 +111,9 @@ namespace LMS.Infrastructure.Data
             {
                 var providerImages = new Dictionary<string, string>();
 
-                providerImages[nameof(PaymentProviders.BankCardRu)] = "https://playerok4.com/images/Icons/CardRF.svg";
-                providerImages[nameof(PaymentProviders.Balance)] = "https://playerok4.com/images/Icons/WalletMoney.png";
-                providerImages[nameof(PaymentProviders.Test)] = "https://playerok4.com/images/Icons/WalletMoney.png";
+                providerImages[nameof(PaymentProviders.BankCardRu)] = "https://playerok.com/images/Icons/CardRF.svg";
+                providerImages[nameof(PaymentProviders.Balance)] = "https://playerok.com/images/Icons/Wallet.png";
+                providerImages[nameof(PaymentProviders.Test)] = "https://playerok.com/images/Icons/Wallet.png";
 
                 var providers = new List<TransactionProviderEntity>
                 {

@@ -22,7 +22,6 @@ namespace LMS.Application.User.UseCases
 
         public async Task<UserEntity> Execute(WarnUserDto dto)
         {
-            await AccessPolicy.FailIfNoAccess(UserRoles.Admin);
             var user = await Context.Users.FirstOrDefaultAsync(x => x.Id == dto.UserId);
             if (user == null)
                 throw new EntityDoesNotExists(nameof(UserEntity), "");

@@ -22,7 +22,7 @@ namespace LMS.Application.Staff.UseCases
             Guard.Against.Null(ticketId, nameof(ticketId));
 
             // Perform access check for admin role
-            await _accessPolicy.FailIfNoAccess(UserRoles.Admin);
+            await _accessPolicy.EnforceRole(UserRoles.Admin);
 
             var ticket = await _context.Tickets
                 .Include(x => x.Comments)

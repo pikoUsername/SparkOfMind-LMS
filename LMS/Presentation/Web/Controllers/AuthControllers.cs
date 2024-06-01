@@ -39,7 +39,7 @@ namespace LMS.Presentation.Web.Controllers
                     {
                         EmailAddress = model.Email,
                         Password = model.Password,
-                        UserName = model.Name
+                        Name = model.Name
                     }
                 );
 
@@ -89,7 +89,7 @@ namespace LMS.Presentation.Web.Controllers
             }
 
             // Генерируем JWT токен
-            var token = GenerateJwtToken(user.Id, user.UserName); // Pass user ID and username
+            var token = GenerateJwtToken(user.Id, user.Fullname); // Pass user ID and username
             var expiresIn = _configuration["Jwt:ExpireMinutes"];
             if (expiresIn == null)
             {

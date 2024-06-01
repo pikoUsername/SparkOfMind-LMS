@@ -40,10 +40,10 @@ namespace LMS.Application.Staff.UseCases
                 throw new AccessDenied("You are not authorized to edit this ticket.");
             }
 
-            if (!string.IsNullOrEmpty(dto.Subject))
-            {
-                ticket.Subject = dto.Subject;
-            }
+            //if (!string.IsNullOrEmpty(dto.Subject))
+            //{
+            //    ticket.Subject = dto.Subject;
+            //}
 
             if (!string.IsNullOrEmpty(dto.Text))
             {
@@ -57,7 +57,7 @@ namespace LMS.Application.Staff.UseCases
             }
 
             // Ensure only moderators can assign users
-            if (await _accessPolicy.CanAccess(UserRoles.Moderator) && dto.AssignUserId != null)
+            if (await _accessPolicy.Role(UserRoles.Admin) && dto.AssignUserId != null)
             {
                 var userToAssign = await _context.Users.FirstOrDefaultAsync(u => u.Id == dto.AssignUserId);
 

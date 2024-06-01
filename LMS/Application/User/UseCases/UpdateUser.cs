@@ -6,7 +6,6 @@ using LMS.Domain.User.Entities;
 using LMS.Domain.User.Enums;
 using LMS.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
 
 namespace LMS.Application.User.UseCases
 {
@@ -42,13 +41,21 @@ namespace LMS.Application.User.UseCases
 
             Guard.Against.Null(byUser, message: "User does not exists");
 
+            if (byUser.Id != user.Id && !await AccessPolicy.IsAllowed(PermissionEnum.edit, user, byUser))
+            {
+                throw new AccessDenied("User access denied"); 
+            }
             if (dto.Email != null)
             {
                 user.Email = dto.Email;
             }
             if (dto.Name != null)
             {
-                user.UserName = dto.Name;
+                user.Name = dto.Name;
+            }
+            if (dto.Surname != null)
+            {
+                user.Surname = dto.Surname; 
             }
             if (dto.TelegramId != null)
             {
@@ -63,19 +70,18 @@ namespace LMS.Application.User.UseCases
             }
             if (dto.Role != null)
             {
-                if (byUser.Role == UserRoles.Owner)
+                if (await AccessPolicy.IsAllowed(PermissionEnum.edit, user, byUser))
                 {
-                    user.UpdateRole(
-                        (UserRoles)dto.Role);
+                    var role = await Context.Roles.FirstOrDefaultAsync(x => x.Role == dto.Role);
+
+                    Guard.Against.Null(role, message: "Role does not exists"); 
+
+                    user.AddRole(role); 
                 }
                 else
                 {
                     throw new AccessDenied(null);
                 }
-            }
-            if (!string.IsNullOrEmpty(dto.Description))
-            {
-                user.Description = dto.Description;
             }
             if (dto.Avatar != null)
             {

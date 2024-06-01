@@ -11,7 +11,7 @@ namespace LMS.Application.Payment.UseCases
 
         public async Task<PurchaseEntity> Execute(UpdatePurchaseDto dto)
         {
-            return new();
+            throw new NotImplementedException();
         }
     }
 }
