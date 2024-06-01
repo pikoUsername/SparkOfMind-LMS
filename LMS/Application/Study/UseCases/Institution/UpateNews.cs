@@ -30,7 +30,7 @@ namespace LMS.Application.Study.UseCases.Institution
             await _institutionPolicy.EnforcePermission(
                 Domain.User.Enums.PermissionEnum.edit, typeof(InstitutionEventEntity), member, dto.NewsId);
 
-            var news = await _context.InstitutionEvents.FirstOrDefaultAsync(x => x.Id == dto.NewsId);
+            var news = await _context.InstitutionNews.FirstOrDefaultAsync(x => x.Id == dto.NewsId);
 
             Guard.Against.NotFound(dto.NewsId, news);
 

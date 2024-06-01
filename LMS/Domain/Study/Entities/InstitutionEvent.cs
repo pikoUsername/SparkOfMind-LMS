@@ -21,14 +21,12 @@ namespace LMS.Domain.Study.Entities
         public UserEntity CreatedBy { get; set; } = null!; 
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public ICollection<FileEntity> Attachments { get; set; } = []; 
 
         public static InstitutionEventEntity Create(
             string title, 
             string text, 
             Guid institutionId,
             UserEntity createdBy, 
-            ICollection<FileEntity> files, 
             DateTime? startDate = null, 
             DateTime? endDate = null)
         {

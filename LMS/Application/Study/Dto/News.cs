@@ -7,7 +7,6 @@ namespace LMS.Application.Study.Dto
         public string Title = null!; 
         public string Text = null!;
         public List<Guid> AllowedToSee = [];
-        public Guid InstitutionId;
         public List<CreateFileDto> Attachments = []; 
     }
 

@@ -3,7 +3,6 @@ using LMS.Application.Common.Interfaces;
 using LMS.Application.Common.UseCases;
 using LMS.Application.Study.Dto;
 using LMS.Application.Study.Interfaces;
-using LMS.Application.User.Interfaces;
 using LMS.Domain.Study.Entities;
 using Microsoft.EntityFrameworkCore;
 
