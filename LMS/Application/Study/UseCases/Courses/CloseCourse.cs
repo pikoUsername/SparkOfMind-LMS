@@ -2,6 +2,8 @@
 using LMS.Application.Common.UseCases;
 using LMS.Application.Study.Dto;
 using LMS.Application.Study.Interfaces;
+using LMS.Domain.Study.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Application.Study.UseCases.Courses
 {
@@ -23,7 +25,17 @@ namespace LMS.Application.Study.UseCases.Courses
         }
         public async Task<bool> Execute(CloseCourseDto dto)
         {
-            return;
+            var course = await _context.Courses.FirstOrDefaultAsync(x => x.Id == dto.CourseId);
+
+            Guard.Against.NotFound(dto.CourseId, course);
+
+            await _accessPolicy.EnforceIsAllowed(Domain.User.Enums.PermissionEnum.delete, course);
+
+            course.Close();
+
+            await _context.SaveChangesAsync(); 
+
+            return true;
         }
     }
 }

@@ -62,5 +62,13 @@ namespace LMS.Domain.Study.Entities
 
             return course; 
         }
+
+        public void Close()
+        {
+            if (Closed) return; 
+            Closed = true;
+
+            AddDomainEvent(new CourseClosed(this)); 
+        }
     }
 }

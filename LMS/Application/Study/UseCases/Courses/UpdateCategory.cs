@@ -24,7 +24,7 @@ namespace LMS.Application.Study.UseCases.Courses
 
         public async Task<bool> Execute(UpdateCategoryDto dto)
         {
-            return;
+            return true;
         }
     }
 }

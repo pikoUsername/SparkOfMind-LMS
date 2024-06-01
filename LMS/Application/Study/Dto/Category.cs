@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using LMS.Application.Common.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace LMS.Application.Study.Dto
 {
@@ -26,7 +27,7 @@ namespace LMS.Application.Study.Dto
         public Guid CategoryId;
     }
 
-    public class GetCategoriesListDto
+    public class GetCategoriesListDto : InputPagination
     {
         public string? Name = null!;
     }

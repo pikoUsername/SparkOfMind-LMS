@@ -1,13 +1,15 @@
-﻿using LMS.Domain.Payment.ValueObjects;
+﻿using LMS.Application.Common.Models;
+using LMS.Domain.Payment.ValueObjects;
 using System.ComponentModel.DataAnnotations;
 
 namespace LMS.Application.Study.Dto
 {
     public class CreateCourseDto : InputInstitution
     {
-        public string Name = null!; 
+        public string Name = null!;
+        public Guid CategoryId; 
         public string Description = null!;
-        public int? Hours;
+        public int Hours;
         public ICollection<Guid> TeacherIds = [];
         public Dictionary<string, string> Attributes = null!;
         public Money BasePrice = null!;
@@ -37,7 +39,7 @@ namespace LMS.Application.Study.Dto
         public Guid CourseId; 
     }
 
-    public class GetCoursesListDto
+    public class GetCoursesListDto : InputPagination
     {
         public string? Name;
         public Guid? CategoryId;

@@ -6,4 +6,9 @@ namespace LMS.Domain.Study.Events
     {
         public CourseEntity Course { get; set; } = course; 
     }
+
+    public class CourseClosed(CourseEntity course) : DomainEvent
+    {
+        public CourseEntity Course { get; set; } = course; 
+    }
 }
