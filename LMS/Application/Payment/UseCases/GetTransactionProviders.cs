@@ -22,7 +22,6 @@ namespace LMS.Application.Payment.UseCases
             return await _context.TransactionProviders
                 .Include(x => x.Systems)
                 .Include(x => x.Logo)
-                .AsNoTracking()
                 .ToListAsync();
         }
     }

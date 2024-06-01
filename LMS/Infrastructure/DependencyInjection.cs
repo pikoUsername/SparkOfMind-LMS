@@ -10,6 +10,7 @@ using LMS.Infrastructure.Caching;
 using LMS.Infrastructure.EventStore;
 using LMS.Infrastructure.Data.Intercepters;
 using LMS.Application.Study.Interfaces;
+using EFCoreSecondLevelCacheInterceptor;
 
 namespace LMS.Infrastructure
 {
@@ -71,6 +72,11 @@ namespace LMS.Infrastructure
                 }
             );
 
+            //services.AddEFSecondLevelCache(options =>
+            //    options.UseMemoryCacheProvider().ConfigureLogging(true).UseCacheKeyPrefix("EF_")
+            //           // Fallback on db if the caching provider fails.
+            //           .UseDbCallsIfCachingProviderIsDown(TimeSpan.FromMinutes(1))
+            //);
             services.AddMailing(configuration);
 
             //services.AddScoped<IFileStorageAdapter, S3StorageAdapter>();

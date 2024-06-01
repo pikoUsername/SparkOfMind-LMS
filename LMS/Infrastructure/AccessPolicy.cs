@@ -19,36 +19,36 @@ namespace LMS.Infrastructure
             _currentUser = user;
         }
 
-        public Task<bool> IsAllowed(PermissionEnum action, object relation, IAccessUser? actor = null)
+        public async Task<bool> IsAllowed(PermissionEnum action, object relation, IAccessUser? actor = null)
         {
-            if (actor == null) 
-                actor = (IAccessUser)GetCurrentUser();
+            if (actor == null)
+                actor = await GetCurrentUser();
             if (actor.IsSuperadmin)
-                return Task.FromResult(true);
+                return true;
             foreach (var permissionAcl in actor.GetPermissions())
             {
                 if (PermissionService.CheckPermissions(permissionAcl.Join(), action, relation))
                 {
-                    return Task.FromResult(true);
+                    return true;
                 }
             }
-            return Task.FromResult(false);
+            return false;
         }
 
-        public Task<bool> Role(UserRoles role, IAccessUser? actor = null)
+        public async Task<bool> Role(UserRoles role, IAccessUser? actor = null)
         {
             if (actor == null)
-                actor = (IAccessUser)GetCurrentUser();
+                actor = (IAccessUser)await GetCurrentUser();
             if (actor.IsSuperadmin)
-                return Task.FromResult(true); 
+                return true; 
             foreach (var userRole in actor.GetRoles())
             {
                 if (userRole.Role == role)
                 {
-                    return Task.FromResult(true); 
+                    return true; 
                 }
             }
-            return Task.FromResult(false);
+            return false;
         }
 
         public async Task<bool> Relationship(PermissionEnum action, object relation, Guid ownerId, IAccessUser? actor = null)
@@ -79,7 +79,7 @@ namespace LMS.Infrastructure
 
         private async Task<UserEntity> GetUserById(Guid userId)
         {
-            // performance eater!!! 
+            // performance eater around 150ms from cold start when permissions is around 0!!! 
             var user = await _context.Users
                 .Include(x => x.Roles)
                 .Include(x => x.Groups)
@@ -87,7 +87,7 @@ namespace LMS.Infrastructure
                 .Include(x => x.Permissions)
                 .FirstOrDefaultAsync(x => x.Id == userId);
 
-            Guard.Against.Null(user, message: "Actor does not exists");
+            Guard.Against.NotFound(userId, user);
 
             return user; 
         }

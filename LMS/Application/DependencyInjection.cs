@@ -2,6 +2,7 @@
 using LMS.Application.Files;
 using LMS.Application.Payment;
 using LMS.Application.Staff;
+using LMS.Application.Study;
 using LMS.Application.User;
 using LMS.Infrastructure;
 using LMS.Infrastructure.EventDispatcher;
@@ -18,6 +19,7 @@ namespace LMS.Application
             services.AddUserApplicationServices();
             services.AddPaymentApplicationServices();
             services.AddFilesApplicationServices();
+            services.AddStudyApplicationServices();
             services.AddStaffApplicationServices();
 
             services.AddUseCasesFromAssembly(Assembly.GetExecutingAssembly());

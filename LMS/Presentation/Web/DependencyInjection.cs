@@ -2,7 +2,6 @@
 using Hangfire.PostgreSql;
 using LMS.Application.Common.Interfaces;
 using LMS.Domain.User.Entities;
-using LMS.Presentation.Web.ExceptionHandlers;
 using LMS.Presentation.Web.Schemas.Filters;
 using LMS.Presentation.Web.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -60,7 +59,7 @@ namespace LMS.Presentation.Web
                     }
                 });
             });
-            services.AddExceptionHandler<GuardClauseExceptionHandler>();
+            //services.AddExceptionHandler<GuardClauseExceptionHandler>();
 
             services.AddHangfire(config =>
                 config

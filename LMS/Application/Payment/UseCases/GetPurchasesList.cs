@@ -66,7 +66,6 @@ namespace LMS.Application.Payment.UseCases
             query = query.Paginate(dto.Start, dto.Ends);
 
             return await query
-                .AsNoTracking()
                 .ToListAsync();
         }
     }

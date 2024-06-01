@@ -31,7 +31,6 @@ namespace LMS.Application.User.UseCases
                 }
 
                 users = await _context.Users
-                    .AsNoTracking()
                     .Where(x => 
                         x.Roles.Any(x => x.Role == dto.Role))
                     .ToListAsync();
@@ -40,7 +39,7 @@ namespace LMS.Application.User.UseCases
             {
                 await _accessPolicy.EnforceIsAllowed(PermissionEnum.write, _context.Notifications.EntityType); 
 
-                users = await _context.Users.AsNoTracking().Where(x => x.Id == dto.UserId).ToListAsync();
+                users = await _context.Users.Where(x => x.Id == dto.UserId).ToListAsync();
             }
 
             var countUsers = users.Count;

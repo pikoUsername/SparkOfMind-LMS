@@ -25,8 +25,11 @@ namespace LMS.Application.User.UseCases
 
             if (dto.UserId != null)
             {
-                await _accessPolicy.EnforceIsAllowed(
-                    PermissionEnum.read, _context.Notifications.EntityType, (Guid)dto.UserId); 
+                if (dto.UserId != (await _accessPolicy.GetCurrentUser()).Id)
+                {
+                    await _accessPolicy.EnforceIsAllowed(
+                        PermissionEnum.read, _context.Notifications.EntityType, (Guid)dto.UserId);
+                } 
 
                 query = query.Where(x => x.ToUserId == dto.UserId);
             }
@@ -47,7 +50,7 @@ namespace LMS.Application.User.UseCases
 
             query = query.Paginate(dto.Start, dto.Ends);
 
-            return await query.AsNoTracking().ToListAsync();
+            return await query.ToListAsync();
         }
     }
 }

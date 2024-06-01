@@ -26,13 +26,12 @@ namespace LMS.Application.Payment.UseCases
                 .Include(x => x.User)
                 .FirstOrDefaultAsync(x => x.Id == dto.WalletId);
 
-            Guard.Against.Null(wallet, message: "Wallet does not exists");
+            Guard.Against.NotFound(dto.WalletId, wallet);
 
-            await _accessPolicy.EnforceIsAllowed(Domain.User.Enums.PermissionEnum.read, wallet);
+            await _accessPolicy.EnforceRelationship(Domain.User.Enums.PermissionEnum.read, wallet, wallet.UserId);
 
             var result = await _context.Transactions
                 .IncludeStandard()
-                .AsNoTracking()
                 .FilterByParams(
                     fromDate: dto.FromDate,
                     toDate: dto.ToDate,

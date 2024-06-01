@@ -7,7 +7,6 @@ namespace LMS.Application.Files
     {
         public static IServiceCollection AddFilesApplicationServices(this IServiceCollection services)
         {
-
             services.AddScoped<IFileService, FileService>();
 
             return services;

@@ -51,7 +51,6 @@ namespace LMS.Application.User.UseCases
         {
             var query = _context.Users
                 .IncludeStandard()
-                .AsNoTracking()
                 .AsQueryable();
 
             if (dto.UserId != null)

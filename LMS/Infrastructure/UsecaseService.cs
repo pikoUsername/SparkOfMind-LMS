@@ -27,9 +27,9 @@ namespace LMS.Infrastructure
         {
             using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole());
             ILogger logger = factory.CreateLogger("UseCaseRegister");
-            
+
             var useCaseTypes = assembly.GetTypes()
-                .Where(type => !type.IsAbstract && !type.IsInterface && IsBaseUseCase(type) && !ignoredTypes.Contains(type))
+                .Where(type => !type.IsAbstract && !type.IsInterface && ImplementsBaseUseCaseInterface(type) && !ignoredTypes.Contains(type))
                 .ToList();
 
             foreach (var useCaseType in useCaseTypes)
@@ -40,10 +40,11 @@ namespace LMS.Infrastructure
             }
         }
 
-        private static bool IsBaseUseCase(Type type)
+        private static bool ImplementsBaseUseCaseInterface(Type type)
         {
-            return type.BaseType != null && type.BaseType.IsGenericType &&
-                   type.BaseType.GetGenericTypeDefinition() == typeof(BaseUseCase<,>);
+            var baseUseCaseInterface = typeof(BaseUseCase<,>);
+            return type.GetInterfaces()
+                       .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == baseUseCaseInterface);
         }
     }
 }

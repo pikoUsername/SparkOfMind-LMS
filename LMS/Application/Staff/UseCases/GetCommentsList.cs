@@ -24,14 +24,12 @@ namespace LMS.Application.Staff.UseCases
                 comments = await _context.TicketComments
                     .Where(x => x.CreatedBy.Id == dto.UserId)
                     .Include(x => x.Files)
-                    .AsNoTracking()
                     .ToListAsync();
             }
             else if (dto.TicketId != null)
             {
                 comments = await _context.TicketComments
                     .Where(x => x.TicketId == dto.TicketId)
-                    .AsNoTracking()
                     .Include(x => x.Files)
                     .ToListAsync();
             }

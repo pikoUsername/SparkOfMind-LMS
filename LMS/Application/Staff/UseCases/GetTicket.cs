@@ -28,7 +28,6 @@ namespace LMS.Application.Staff.UseCases
             // Ensure only the creator of the ticket or higher role can access the ticket
             var ticket = await _context.Tickets
                 .Include(x => x.Comments)
-                .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == dto.TicketId);
             Guard.Against.Null(ticket, $"Ticket with ID {dto.TicketId} not found.");
 
