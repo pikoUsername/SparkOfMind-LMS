@@ -29,6 +29,7 @@ namespace LMS.Application.Study.Dto
         public ICollection<CreateFileDto> Attachments { get; set; } = [];
         [Required]
         public Guid AssignedGroupId { get; set; }
+        public bool HiddenUntilStartDate { get; set; }
         public Guid? ExaminationId { get; set; }
     }
 
