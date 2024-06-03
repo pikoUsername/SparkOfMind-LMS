@@ -27,6 +27,8 @@ namespace LMS.Application.Payment.UseCases
 
             wallet.AddBalance(dto.Balance);
 
+            await _context.SaveChangesAsync(); 
+
             return true;
         }
     }

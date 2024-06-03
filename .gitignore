@@ -85,6 +85,7 @@ csx/
 
 # Windows Store app package directory
 AppPackages/
+LMS/Data
 
 # Others
 sql/
