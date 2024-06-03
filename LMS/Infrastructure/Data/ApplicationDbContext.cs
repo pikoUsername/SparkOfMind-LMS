@@ -63,7 +63,6 @@ namespace LMS.Infrastructure.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IEventDispatcher eventDispatcher) : base(options)
         {
             _dispatcher = eventDispatcher;
-            //ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;  // ??????? TODO: need to research 
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
