@@ -26,8 +26,14 @@ namespace LMS.Application.Study.UseCases.Courses
             await _accessPolicy.EnforceIsAllowed(Domain.User.Enums.PermissionEnum.delete, typeof(CategoryEntity)); 
 
             var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == dto.CategoryId);
+            
+            Guard.Against.NotFound(dto.CategoryId, category);
 
-            Guard.Against.NotFound(dto.CategoryId, category); 
+            var coursesCount = _context.Courses.Where(x => x.Category.Id == category.Id).Count();
+            if (coursesCount > 1)
+            {
+                return false; 
+            }
 
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync(); 

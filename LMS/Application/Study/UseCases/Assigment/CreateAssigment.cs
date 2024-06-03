@@ -44,6 +44,7 @@ namespace LMS.Application.Study.UseCases.Assigment
 
             Guard.Against.Null(group, message: "Group does not exists");
             Guard.Against.Null(teacher, message: "Teacher does not exists"); 
+            
             var course = await _context.Courses.FirstAsync(x => x.Id == group.CourseId); 
             var assignment = AssignmentEntity.Create(
                 dto.Name,
@@ -64,6 +65,7 @@ namespace LMS.Application.Study.UseCases.Assigment
                 student.User.Permissions.AddPermissionWithCode(assignment, PermissionEnum.read);
                 _context.Users.Update(student.User); 
             }
+           
 
             teacher.User.Permissions.AddPermissionWithCode(assignment, PermissionEnum.all); 
 
