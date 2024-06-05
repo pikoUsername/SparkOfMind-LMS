@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
 
-namespace LMS.Presentation.Web.Controllers
+namespace LMS.Presentation.Web.Controllers.Files
 {
     [Route("api/files/")]
     [ApiController]

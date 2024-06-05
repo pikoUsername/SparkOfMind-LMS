@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LMS.Presentation.Web.Controllers
+namespace LMS.Presentation.Web.Controllers.Payment
 {
     [Route("api/wallet/")]
     [ApiController]

@@ -7,7 +7,7 @@ using LMS.Domain.User.Entities;
 using LMS.Application.User.Interfaces;
 using LMS.Application.User.Dto;
 
-namespace LMS.Presentation.Web.Controllers
+namespace LMS.Presentation.Web.Controllers.User
 {
     [SwaggerTag("auth")]
     [Route("api/user/")]
