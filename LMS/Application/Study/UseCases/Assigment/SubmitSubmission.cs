@@ -11,13 +11,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Application.Study.UseCases.Assigment
 {
-    public class CompleteAssignment : BaseUseCase<CompleteAssignmentDto, SubmissionEntity>
+    public class SubmitSubmission : BaseUseCase<CompleteAssignmentDto, SubmissionEntity>
     {
         private IApplicationDbContext _context { get; }
         private IInstitutionAccessPolicy _institutionPolicy { get; }
         private IFileService _fileService { get; }
 
-        public CompleteAssignment(
+        public SubmitSubmission(
             IApplicationDbContext dbContext,
             IInstitutionAccessPolicy institutionPolicy,
             IFileService fileService)

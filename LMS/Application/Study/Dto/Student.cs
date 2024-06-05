@@ -21,7 +21,7 @@ namespace LMS.Application.Study.Dto
         public string Phone { get; set; } = null!; 
     }
 
-    public class GetStudentDto
+    public record GetStudentDto
     {
         public Guid? StudentId { get; set; }
         public string? Fullname { get; set; } 
@@ -35,5 +35,12 @@ namespace LMS.Application.Study.Dto
         public DateTime? BirthDate;
         [Phone]
         public string? Phone; 
+    }
+
+    public record GetStudentListDto
+    {
+        public int Start = 0;
+        public int Ends = 10; 
+        public Guid? InstitutionId;
     }
 }

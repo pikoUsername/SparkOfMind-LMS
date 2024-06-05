@@ -20,6 +20,7 @@ namespace LMS.Application.Study
             services.AddScoped<MarkDeletedHandler>();
             services.AddScoped<StudentCreatedHandler>();
 
+
             return services;
         }
     }

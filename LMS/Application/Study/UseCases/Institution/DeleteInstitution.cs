@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 
 namespace LMS.Application.Study.UseCases.Institution
 {
-    public class DeleteIstitution : BaseUseCase<DeleteInstitutionDto, bool>
+    public class DeleteInstitution : BaseUseCase<DeleteInstitutionDto, bool>
     {
         // cannot be deleted directly, it has two steps: 
         // First, owner starts institution deletion proccess, and marks for deletion. 
@@ -23,7 +23,7 @@ namespace LMS.Application.Study.UseCases.Institution
         private IInstitutionAccessPolicy _institutionPolicy { get; }
         private IAccessPolicy _accessPolicy { get; }
 
-        public DeleteIstitution(
+        public DeleteInstitution(
             IApplicationDbContext dbContext,
             IInstitutionAccessPolicy institutionPolicy,
             IAccessPolicy accessPolicy)
