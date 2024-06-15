@@ -44,6 +44,7 @@ namespace LMS.Application.Common.Interfaces
         DbSet<CourseGroupEntity> CourseGroups { get; set; }
         DbSet<DayLessonEntity> DayLessons { get; set; }
         DbSet<DayScheduleEntity> DaySchedules { get; set; }
+        DbSet<ScheduleEntity> Schedules { get; set; }
         DbSet<ExaminationEntity> Examinations { get; set; }
         DbSet<GradeTypeEntity> GradeTypes { get; set; }
         DbSet<SubmissionEntity> Submissions { get; set; }

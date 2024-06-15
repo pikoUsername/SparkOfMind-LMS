@@ -53,4 +53,9 @@
     <Using Include="System.Threading.Tasks" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Application.IntegrationTests\UseCases\Assignment\" />
+    <Folder Include="Application.IntegrationTests\UseCases\Staff\" />
+  </ItemGroup>
+
 </Project>

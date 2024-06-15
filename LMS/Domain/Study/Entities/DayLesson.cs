@@ -11,9 +11,9 @@ namespace LMS.Domain.Study.Entities
         [ForeignKey(nameof(CourseEntity)), Required]
         public Guid CourseId { get; set; }
         [Required]
-        public DateTime StartTime { get; set; }
+        public TimeOnly StartTime { get; set; }
         [Required]
-        public DateTime EndTime { get; set; }
+        public TimeOnly EndTime { get; set; }
         public bool Canceled { get; set; } = false;
         public bool Completed { get; set; } = false;
         [ForeignKey(nameof(TeacherEntity)), Required]
@@ -26,8 +26,8 @@ namespace LMS.Domain.Study.Entities
         public static DayLessonEntity Create(
             string name, 
             Guid courseId, 
-            DateTime startTime, 
-            DateTime endTime, 
+            TimeOnly startTime,
+            TimeOnly endTime, 
             Guid teacherId, 
             Guid groupId, 
             string room)
